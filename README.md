@@ -118,11 +118,11 @@ Supports both SQLite (`growtech.db`) and PostgreSQL (`DATABASE_URL`).
 pip install -r requirements.txt
 ```
 
-### Step 2: Run Full Automated Test Suite (26 Tests)
+### Step 2: Run Full Automated Test Suite (33 Tests)
 ```powershell
-python -m unittest test_app.py test_phase2.py test_production.py
+python -m unittest test_app.py test_phase2.py test_production.py test_supabase_storage.py
 ```
-*(All 26 tests pass: 7 public regression tests + 11 admin management tests + 8 production readiness tests).*
+*(All 33 tests pass: 7 public regression tests + 11 admin management tests + 8 production readiness tests + 7 Supabase storage & ephemeral filesystem resilience tests).*
 
 ### Step 3: Run the Local Development Server
 ```powershell
@@ -136,8 +136,12 @@ python app.py
 
 ---
 
-## 7. Production Deployment (Render)
+## 7. Production Deployment (100% Free ₹0 Architecture)
 
-For comprehensive, step-by-step instructions on deploying the application to **Render** with PostgreSQL and Persistent Disk storage, refer to the dedicated guide:
+The application is engineered for zero-cost production hosting on:
+- **Render Free Web Service** (Python 3, Gunicorn WSGI, TLS/HTTPS, ₹0/month)
+- **Supabase Free PostgreSQL** (Managed database via `DATABASE_URL`, ₹0/month)
+- **Supabase Free Storage** (Cloud uploads in `growtech-uploads` bucket, permanent CDN URLs, ₹0/month)
 
+For complete step-by-step setup instructions, refer to:
 👉 **[DEPLOYMENT_GUIDE.md](file:///c:/Users/nipun/OneDrive/Desktop/GROWTECH-WEBSITE/DEPLOYMENT_GUIDE.md)**

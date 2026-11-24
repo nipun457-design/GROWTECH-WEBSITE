@@ -1,15 +1,14 @@
-# GROWTECH ENGINEERS — Production Deployment Guide (Render)
+# GROWTECH ENGINEERS — Production Deployment Guide (100% Free ₹0 Architecture)
 
-This guide documents the complete procedure for deploying the **GROWTECH ENGINEERS** corporate web application to [Render](https://render.com) using a production-grade architecture:
-- **Render Web Service:** Python Flask with Gunicorn WSGI server.
-- **Render PostgreSQL:** Managed relational database with automatic backups.
-- **Render Persistent Disk:** Permanent persistent storage mounted at `/var/data/uploads` for media, documents, and certificates.
-- **HTTPS & SSL:** Managed TLS encryption provided automatically by Render.
-- **Private Owner Admin Portal:** Secure `/admin` dashboard access for Mr. Naresh Kumar.
+This guide documents the complete procedure for deploying the **GROWTECH ENGINEERS** corporate web platform with a **strict budget of ₹0 / month**:
+- **Render Free Web Service:** Python Flask with Gunicorn WSGI server (Free tier, HTTPS included, zero hosting fee).
+- **Supabase Free PostgreSQL:** High-performance managed PostgreSQL database (Free tier, 500 MB storage, zero database fee).
+- **Supabase Free Storage:** Permanent cloud object storage for admin-uploaded product photos, gallery media, compliance documents, and news milestones (Free tier, 1 GB storage, public CDN URLs, zero storage fee).
+- **Local Development Parity:** SQLite (`growtech.db`) and local uploads (`static/uploads/`) remain default for local offline work.
 
 ---
 
-## Architecture Overview
+## ₹0 Architecture Overview
 
 ```
                                   +------------------------------------+
@@ -23,21 +22,22 @@ This guide documents the complete procedure for deploying the **GROWTECH ENGINEE
                                                     |
                                                     v
                                   +-----------------+------------------+
-                                  |  Render Web Service (Linux)        |
+                                  |  Render Free Web Service (Linux)   |
                                   |  - Gunicorn WSGI (2 w / 4 th)      |
                                   |  - Flask 3.x Production App        |
+                                  |  - Plan: FREE (₹0/mo)              |
                                   |  - Health: /api/health             |
                                   +--------+------------------+--------+
                                            |                  |
-                       (Persistent Storage)|                  |(DATABASE_URL)
+           (Direct Cloud Image URLs / CDN) |                  |(DATABASE_URL)
                                            v                  v
                  +-------------------------+---+  +-----------+----------------------+
-                 | Render Persistent Disk      |  | Render Managed PostgreSQL        |
-                 | Mount: /var/data/uploads/   |  | Tables: users, products,          |
-                 | - products/                 |  |         enquiries, gallery,       |
-                 | - gallery/                  |  |         certificates, news        |
-                 | - certificates/             |  +----------------------------------+
-                 | - news/                     |
+                 | Supabase Free Storage       |  | Supabase Free PostgreSQL         |
+                 | Bucket: growtech-uploads    |  | Plan: FREE (₹0/mo)               |
+                 | - products/                 |  | Tables: users, products,          |
+                 | - gallery/                  |  |         enquiries, gallery,       |
+                 | - certificates/             |  |         certificates, news        |
+                 | - news/                     |  +----------------------------------+
                  +-----------------------------+
 ```
 
@@ -45,88 +45,82 @@ This guide documents the complete procedure for deploying the **GROWTECH ENGINEE
 
 ## 1. Prerequisites
 
-Before beginning the deployment:
-1. A Git repository (e.g., GitHub, GitLab) containing the `GROWTECH-WEBSITE` project files.
-2. Verify that `.gitignore` is present so that local SQLite databases (`growtech.db`), `.env` files, and temporary caches are **not** committed to version control.
-3. A web browser to access the [Render Dashboard](https://dashboard.render.com).
+1. A Git repository on GitHub containing the `GROWTECH-WEBSITE` project.
+2. A free [Supabase](https://supabase.com) account (no credit card required).
+3. A free [Render](https://render.com) account (no credit card required for free web services).
 
 ---
 
-## 2. Step 1: Create a Render Account
+## 2. Step 1: Set Up Supabase (Database & Storage)
 
-1. Navigate to **[https://render.com](https://render.com)**.
-2. Click **Get Started** or **Sign In**.
-3. Sign in using your GitHub account (recommended for seamless repository linking) or sign up using your corporate email (`growtechengineers911@gmail.com`).
-4. Complete email verification if prompted.
+### A. Create a New Supabase Project
+1. Go to **[https://supabase.com](https://supabase.com)** and sign in.
+2. Click **New Project**.
+3. Fill in the details:
+   - **Name:** `growtech-engineers`
+   - **Database Password:** Enter a strong password (save this securely).
+   - **Region:** `Singapore` (recommended for lowest latency in India) or closest to your audience.
+   - **Pricing Plan:** **Free Tier (₹0 / month)**.
+4. Click **Create new project** and wait 1–2 minutes for provisioning.
 
----
+### B. Copy the PostgreSQL Connection String (`DATABASE_URL`)
+1. In your Supabase project dashboard, click **Project Settings** (gear icon at the bottom of the left sidebar).
+2. Click **Database**.
+3. Scroll to **Connection string** and select **URI**:
+   - Choose **Transaction pooler (Port 6543)** or **Direct (Port 5432)**.
+   - The connection string looks like:
+     ```
+     postgresql://postgres.[project-ref]:[YOUR-PASSWORD]@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres
+     ```
+   - Replace `[YOUR-PASSWORD]` with the database password you chose in Step A.
+   - This value will be your `DATABASE_URL` environment variable.
 
-## 3. Deployment Options
+### C. Create the Public Storage Bucket (`growtech-uploads`)
+1. Click **Storage** in the left sidebar menu.
+2. Click **New bucket**.
+3. Configure the bucket:
+   - **Bucket Name:** `growtech-uploads`
+   - **Public bucket:** **Toggle ON (Yes)** *(Required so website visitors can view product photos and gallery media).*
+4. Click **Save**.
 
-You can deploy to Render using either:
-- **Option 1: Render Blueprint (Infrastructure-as-Code — Recommended):** Render reads `render.yaml` and provisions the Web Service, PostgreSQL database, persistent disk, and environment variables automatically.
-- **Option 2: Manual Dashboard Setup:** Step-by-step creation via the Render Web UI.
-
-### Note on Render Plans & Persistent Disks
-- **Starter Plan (Full Production):** Render requires the Web Service to be on the `Starter` plan ($7/month) to attach a persistent disk (`/var/data/uploads`). This ensures product photos, certificates, and media uploaded by the owner persist across application updates, re-deploys, and container restarts.
-- **Free Tier (Evaluation / Demo):** If using Render's Free tier, the PostgreSQL database is free (for 30 days), but persistent disks cannot be attached. Uploaded files will be stored in `static/uploads` within the container (ephemeral). In `render.yaml`, the Web Service is configured with `plan: starter` and PostgreSQL with `plan: free`.
-
----
-
-## 4. Option 1: One-Click Deploy via Render Blueprint (Recommended)
-
-1. Push your repository to GitHub.
-2. In the Render Dashboard, click **New +** in the top-right corner and select **Blueprint**.
-3. Select your `growtech-website` repository.
-4. Render will parse `render.yaml` and display the resources to be created:
-   - **growtech-engineers-web** (Web Service, Python 3, Gunicorn, Starter plan)
-   - **growtech-uploads** (Persistent Disk, 1 GB mounted at `/var/data/uploads`)
-   - **growtech-db** (Managed PostgreSQL database, Free plan)
-5. Review the plan and click **Apply**.
-6. Render will automatically build the service, run `migrate_phase2.py` to create tables, and start Gunicorn.
-7. Proceed to **Step 8: Initial Admin Account Setup**.
-
----
-
-## 5. Option 2: Manual Dashboard Setup
-
-Ensure your local project code is pushed to your private or organization GitHub repository:
-```bash
-git init
-git add .
-git commit -m "Production release: GROWTECH ENGINEERS Corporate Platform"
-git remote add origin https://github.com/<your-org-or-user>/growtech-website.git
-git branch -M main
-git push -u origin main
-```
+### D. Copy API Credentials (`SUPABASE_URL` and `SUPABASE_KEY`)
+1. Navigate to **Project Settings > API**.
+2. Under **Project URL**, copy the URL (e.g. `https://[project-ref].supabase.co`).
+   - This is your `SUPABASE_URL`.
+3. Under **Project API keys**, find the **service_role** key (click "Reveal" to copy).
+   - *Security Note:* The `service_role` key is strictly kept in Render environment variables on the backend server. It is **never** sent to the client browser or included in frontend templates.
+   - This is your `SUPABASE_KEY` (or `SUPABASE_SERVICE_ROLE_KEY`).
 
 ---
 
-## 4. Step 3: Create the Render PostgreSQL Database
+## 3. Step 2: Deploy to Render Free Web Service
 
-1. In the Render Dashboard, click **New +** in the top-right corner and select **PostgreSQL**.
-2. Configure the database details:
-   - **Name:** `growtech-db`
-   - **Database:** `growtech`
-   - **User:** `growtech_user`
-   - **Region:** `Singapore` (recommended for low latency in India) or `Frankfurt` / `Oregon`.
-   - **PostgreSQL Version:** `16` (Default)
-   - **Plan:** `Free` (or `Starter` for high-availability production workloads).
-3. Click **Create Database**.
-4. Once provisioned (typically 1–2 minutes), find the **Connections** panel:
-   - Copy the **Internal Database URL** (e.g., `postgresql://growtech_user:password@dpg-.../growtech`).
-   - *Note:* Render web services in the same region communicate securely over the internal network via the Internal Database URL.
+You can deploy using either the Blueprint (`render.yaml`) or manual configuration:
+
+### Option A: One-Click Deploy via Render Blueprint (Recommended)
+1. Push your latest code to GitHub (`main` branch).
+2. Go to the [Render Dashboard](https://dashboard.render.com).
+3. Click **New +** in the top right and select **Blueprint**.
+4. Select your `growtech-website` repository.
+5. Render reads `render.yaml` and displays:
+   - **Service:** `growtech-engineers-web` (Web Service, Python 3, Free Plan, ₹0/mo).
+   - **Persistent Disk:** *None* (Persistent storage is handled by Supabase Storage).
+   - **Databases:** *None* (PostgreSQL is hosted on Supabase).
+6. Under Environment Variables, paste the values:
+   - `DATABASE_URL`: Your Supabase PostgreSQL URI from Step 2B.
+   - `SUPABASE_URL`: Your Supabase Project URL from Step 2D.
+   - `SUPABASE_KEY`: Your Supabase Service Role key from Step 2D.
+7. Click **Apply**.
 
 ---
 
-## 5. Step 4: Create the Render Web Service
-
-1. In the Render Dashboard, click **New +** and select **Web Service**.
-2. Select **Build and deploy from a Git repository** and connect your `growtech-website` repository.
-3. Configure the Web Service settings:
+### Option B: Manual Web Service Setup on Render
+1. In Render Dashboard, click **New + > Web Service**.
+2. Select **Build and deploy from a Git repository** and connect your repository.
+3. Configure settings:
    - **Name:** `growtech-engineers-web`
    - **Language:** `Python 3`
-   - **Region:** Same region as your database (`Singapore`).
+   - **Region:** `Singapore` (or match Supabase region)
    - **Branch:** `main`
    - **Build Command:**
      ```bash
@@ -136,59 +130,43 @@ git push -u origin main
      ```bash
      gunicorn app:app --workers 2 --threads 4 --timeout 120
      ```
-   - **Plan:** `Free` (or `Starter` if attaching a persistent disk).
-
----
-
-## 6. Step 5: Configure Persistent Disk Storage
-
-Render allows attaching a persistent disk to ensure uploaded product photos, machinery videos, and compliance documents are never lost upon code updates or restarts:
-
-1. In the Web Service settings page, scroll down to the **Disks** section.
-2. Click **Add Disk**:
-   - **Name:** `growtech-uploads`
-   - **Mount Path:** `/var/data/uploads`
-   - **Size:** `1 GB` (or larger depending on planned catalogue volume).
-3. Save the disk configuration.
-
----
-
-## 7. Step 6: Configure Environment Variables
-
-In the Web Service settings, navigate to the **Environment** tab and add the following variables:
+   - **Plan:** **Free (₹0 / month)**
+4. In the **Environment** tab, add the environment variables:
 
 | Key | Recommended Production Value | Description |
 | :--- | :--- | :--- |
-| `FLASK_ENV` | `production` | Enables production mode |
-| `FLASK_DEBUG` | `false` | Disables debug mode and tracebacks |
-| `SECRET_KEY` | *(Click "Generate" in Render or generate a random 64-char key)* | Cryptographic session signing key |
-| `DATABASE_URL` | *(Paste Internal Database URL from Step 3)* | Connection string to Render PostgreSQL |
-| `UPLOAD_FOLDER` | `/var/data/uploads` | Path to the persistent disk storage |
+| `FLASK_ENV` | `production` | Production mode |
+| `FLASK_DEBUG` | `false` | Disables debug mode and traces |
+| `SECRET_KEY` | *(Click "Generate" or enter random 64-char key)* | Session signing key |
+| `DATABASE_URL` | `postgresql://postgres.[ref]:[pass]@[host]:6543/postgres` | Supabase PostgreSQL URI |
+| `SUPABASE_URL` | `https://[project-ref].supabase.co` | Supabase Project REST API URL |
+| `SUPABASE_KEY` | `eyJhbGciOi...` | Supabase Service Role API Key |
+| `SUPABASE_BUCKET`| `growtech-uploads` | Public storage bucket name |
 | `SESSION_COOKIE_SECURE` | `true` | Enforces HTTPS-only cookies |
-| `SESSION_COOKIE_HTTPONLY` | `true` | Protects cookies from client-side scripts |
+| `SESSION_COOKIE_HTTPONLY` | `true` | Protects cookies from client scripts |
 | `SESSION_COOKIE_SAMESITE` | `Lax` | Mitigates CSRF token hijacking |
-| `ADMIN_USERNAME` | `admin` | Initial owner account username |
-| `ADMIN_PASSWORD` | *(Enter a secure production password, min 12 chars)* | Master password for Mr. Naresh Kumar |
 
-*Security Warning:* Never reuse the default development password. Enter a strong, private password known only to the business owner.
+5. Click **Create Web Service**.
 
 ---
 
-## 8. Step 7: Automatic Deployment & Schema Initialization
+## 4. Step 3: Verify Automated Migration & Health
 
-1. Click **Create Web Service** (or **Manual Deploy > Deploy latest commit**).
-2. Render will execute:
-   - `pip install -r requirements.txt`
-   - `python migrate_phase2.py` (which connects to PostgreSQL, creates all 8 relational tables with `SERIAL PRIMARY KEY`, and seeds initial verified products, company profile information, gallery items, and milestones).
-3. Once the build finishes, verify the logs display:
+During deployment, Render runs:
+1. `pip install -r requirements.txt`
+2. `python migrate_phase2.py`:
+   - Connects to Supabase PostgreSQL.
+   - Creates all tables (`users`, `products`, `product_images`, `company_content`, `gallery`, `certificates`, `news_items`, `enquiries`).
+   - Seeds initial verified company information and products if empty.
+3. Verify the deployment logs show:
    ```
    Database migration completed successfully.
    [INFO] Starting gunicorn 21.x.x
    [INFO] Listening at: http://0.0.0.0:10000
    ```
-4. Access the health check endpoint in your browser:
+4. Test the health check endpoint in your browser:
    `https://growtech-engineers-web.onrender.com/api/health`
-   Should return HTTP 200:
+   Expected response (HTTP 200):
    ```json
    {
      "status": "healthy",
@@ -200,69 +178,62 @@ In the Web Service settings, navigate to the **Environment** tab and add the fol
 
 ---
 
-## 9. Step 8: Initial Admin Account Setup / Password Reset
+## 5. Step 4: Provision Owner Admin Account
 
-To provision or reset the owner account directly on the live Render environment:
+To create or reset the administrator password for Mr. Naresh Kumar on the live environment:
 
-### Method A: Via Render Shell (Recommended)
-1. In the Render Dashboard, open the `growtech-engineers-web` service.
-2. Click the **Shell** tab on the left menu.
+1. In the Render Dashboard, open `growtech-engineers-web`.
+2. Click the **Shell** tab on the left.
 3. Run the interactive account provisioner:
    ```bash
    python create_admin.py --interactive
    ```
-4. Enter the administrator username (e.g. `admin`) and set the owner's private password (minimum 8 characters; password input will remain hidden).
+4. Enter the administrator username (e.g., `admin`) and set a strong password (minimum 8 characters).
 5. Output will confirm:
    `Admin account 'admin' updated/reset successfully.`
 
-### Method B: Password Reset Utility
-If the owner ever needs to reset credentials later:
-```bash
-python create_admin.py --username admin --password "NewSecurePassword123!" --reset-password
-```
-
 ---
 
-## 10. Step 9: Migrating Existing Local Data to Production (Optional)
+## 6. Step 5: Safe Media & Data Migration (Optional)
 
-If you have test enquiries or content in your local `growtech.db` SQLite database that you wish to transfer to Render PostgreSQL:
+If you have existing test records or uploaded media in your local SQLite environment that you wish to transfer to production:
 
-1. **Create a local JSON backup:**
+### Database Records Migration:
+1. Create a local JSON backup:
    ```powershell
    python migrate_data.py --backup
    ```
-   *(Saves to `backups/growtech_backup_<timestamp>.json`).*
-2. **Transfer to production:**
-   Set the Render PostgreSQL connection string in your local PowerShell session temporarily and run the direct migrator:
+2. Set `DATABASE_URL` in your local PowerShell session temporarily and run:
    ```powershell
-   $env:DATABASE_URL="postgresql://growtech_user:<password>@<external-host>.render.com/growtech"
+   $env:DATABASE_URL="postgresql://postgres.[ref]:[pass]@[host]:6543/postgres"
    python migrate_data.py --sqlite-to-postgres
    Remove-Item env:DATABASE_URL
    ```
-   *(All existing enquiry records, products, gallery media, and company keys will be imported safely without duplicates).*
+
+### Local Uploaded Files Migration to Supabase Storage:
+1. Run a **safe simulation (dry-run)** first to inspect what would be migrated:
+   ```powershell
+   $env:SUPABASE_URL="https://[project-ref].supabase.co"
+   $env:SUPABASE_KEY="[service_role_key]"
+   python migrate_data.py --migrate-media-to-supabase --dry-run
+   ```
+2. When ready, run the actual migration (prompts for confirmation before uploading):
+   ```powershell
+   python migrate_data.py --migrate-media-to-supabase
+   Remove-Item env:SUPABASE_URL
+   Remove-Item env:SUPABASE_KEY
+   ```
+   *(Committed factory photos in `static/images/` are protected and never duplicated or altered).*
 
 ---
 
-## 11. Step 10: Connecting a Custom Domain (e.g., growtechengineers.com)
+## 7. Step 6: Post-Deployment Verification Checklist
 
-1. In the Render Web Service dashboard, navigate to **Settings > Custom Domains**.
-2. Click **Add Custom Domain**.
-3. Enter your domain: `growtechengineers.com` and `www.growtechengineers.com`.
-4. Configure your DNS provider (e.g. GoDaddy, Namecheap, Cloudflare, Google Domains):
-   - **For `www`:** Add a `CNAME` record pointing to your Render service address (e.g., `growtech-engineers-web.onrender.com`).
-   - **For apex domain (`growtechengineers.com`):** Add an `A` record pointing to Render's IP address (shown in your Render dashboard).
-5. Render will automatically issue and renew a free Let's Encrypt SSL certificate within a few minutes.
-
----
-
-## 12. Verification & Smoke Testing Checklist
-
-After deployment, perform these verification checks on the live site:
-- [ ] **Homepage (`/`):** Logo, factory entrance hero image, capabilities, and customer logos load with HTTPS.
-- [ ] **Company Page (`/company`):** Company background, proprietor profile, vision, mission, and equipment inventory load.
-- [ ] **Products Catalog (`/products`):** Category filter tabs work and technical specifications appear.
-- [ ] **Enquiry Submission (`/contact`):** Submit a test RFQ; verify success alert and check that it appears in `/admin/enquiries`.
-- [ ] **Admin Login (`/admin/login`):** Log in using the owner credentials created in Step 8.
-- [ ] **Unauthorized Access:** Open an Incognito window and visit `/admin/products`; verify redirection to `/admin/login`.
-- [ ] **Health Endpoint (`/api/health`):** Returns `"status": "healthy"` and `"database": "connected"`.
-- [ ] **404 Page (`/any-invalid-url`):** Renders branded industrial error page without stack traces.
+- [ ] **Homepage (`/`):** Logo, hero facility photo, machinery photos, and client logos load correctly via HTTPS.
+- [ ] **Catalog (`/products`):** Products and category filters load with images.
+- [ ] **RFQ Enquiry Form (`/contact`):** Submit a test RFQ; verify success flash alert and check that it appears in `/admin/enquiries`.
+- [ ] **Admin Login (`/admin/login`):** Log in using owner credentials.
+- [ ] **Upload Test (`/admin/products/add`):** Upload a new test product image; verify it uploads to Supabase Storage and displays with its Supabase public URL.
+- [ ] **Delete Test (`/admin/products/delete/<id>`):** Delete the test product; verify that the Supabase Storage object is cleaned up.
+- [ ] **Ephemeral Filesystem Resilience:** Even after Render spins down or restarts, uploaded images remain accessible from Supabase CDN without loss.
+- [ ] **Cost Audit:** Confirm that both Render and Supabase dashboards show **₹0 / $0.00** billing.

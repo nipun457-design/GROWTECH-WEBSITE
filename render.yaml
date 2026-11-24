@@ -1,5 +1,7 @@
 # ==============================================================================
 # Render Blueprint Specification for GROWTECH ENGINEERS Corporate Web Platform
+# 100% Free Tier Architecture (Render Free Web Service + Supabase Free PostgreSQL & Storage)
+# Total Cost: ₹0 / month (No credit card or paid resources required)
 # https://render.com/docs/blueprint-spec
 # ==============================================================================
 
@@ -9,7 +11,7 @@ services:
     runtime: python
     buildCommand: "pip install -r requirements.txt && python migrate_phase2.py"
     startCommand: "gunicorn app:app --workers 2 --threads 4 --timeout 120"
-    plan: starter
+    plan: free
     region: singapore
     envVars:
       - key: FLASK_ENV
@@ -21,19 +23,10 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: DATABASE_URL
-        fromDatabase:
-          name: growtech-db
-          property: connectionString
-      - key: UPLOAD_FOLDER
-        value: /var/data/uploads
-    disk:
-      name: growtech-uploads
-      mountPath: /var/data/uploads
-      sizeGB: 1
-
-databases:
-  - name: growtech-db
-    databaseName: growtech
-    user: growtech_user
-    plan: free
-    region: singapore
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: SUPABASE_BUCKET
+        value: growtech-uploads

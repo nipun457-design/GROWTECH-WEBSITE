@@ -169,7 +169,7 @@
                 <tr>
                   <td>
                     <div class="d-flex align-items-center gap-2">
-                      <img src="{{ url_for('static', filename='images/' + p.image) if not p.image.startswith('uploads/') else url_for('static', filename=p.image) }}" alt="{{ p.title }}" class="thumb-table-sm">
+                      <img src="{{ p.image | media_url }}" alt="{{ p.title }}" class="thumb-table-sm">
                       <div class="fw-semibold small text-truncate" style="max-width: 140px;">{{ p.title }}</div>
                     </div>
                   </td>

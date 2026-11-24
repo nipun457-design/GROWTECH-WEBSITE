@@ -23,6 +23,7 @@ class GrowtechEngineersTestCase(unittest.TestCase):
         response = self.client.get('/')
         self.assertIn(b'Naresh Kumar', response.data)
         self.assertIn(b'9991535590', response.data)
+        self.assertIn(b'wa.me/919991535590', response.data)
         self.assertNotIn(b'8930294103', response.data)
         self.assertIn(b'growtechengineers911@gmail.com', response.data)
         self.assertIn(b'Pachgaon', response.data)

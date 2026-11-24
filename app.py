@@ -13,6 +13,7 @@ from flask import (
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
 import db
+import storage
 
 app = Flask(__name__)
 
@@ -69,7 +70,7 @@ def serve_uploaded_file(filename):
     if '..' in safe_path.split(os.path.sep):
         abort(403)
     
-    # 1. Check persistent storage directory
+    # 1. Check persistent/local storage directory
     full_path = os.path.join(UPLOAD_BASE, safe_path)
     if os.path.isfile(full_path):
         folder_dir = os.path.dirname(full_path)
@@ -83,6 +84,10 @@ def serve_uploaded_file(filename):
         folder_dir = os.path.dirname(local_full)
         base_file = os.path.basename(local_full)
         return send_from_directory(folder_dir, base_file)
+    
+    # 3. If Supabase Storage is enabled, redirect to cloud asset
+    if storage.is_supabase_storage_enabled():
+        return redirect(storage.get_supabase_public_url(safe_path))
         
     abort(404)
 
@@ -118,23 +123,13 @@ def verify_csrf_token():
         abort(403)
 
 def allowed_file(filename, custom_allowed=None):
-    allowed = custom_allowed or ALLOWED_EXTENSIONS
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed
+    return storage.allowed_file(filename, custom_allowed=custom_allowed)
 
 def save_uploaded_file(file_obj, subfolder, custom_allowed=None):
-    if not file_obj or file_obj.filename == '':
-        return None
-    if not allowed_file(file_obj.filename, custom_allowed):
-        return None
-    
-    original = secure_filename(file_obj.filename)
-    ext = original.rsplit('.', 1)[1].lower() if '.' in original else 'jpg'
-    safe_name = f"{uuid.uuid4().hex[:12]}_{int(datetime.now().timestamp())}.{ext}"
-    dest_folder = os.path.join(UPLOAD_BASE, subfolder)
-    os.makedirs(dest_folder, exist_ok=True)
-    full_path = os.path.join(dest_folder, safe_name)
-    file_obj.save(full_path)
-    return f"uploads/{subfolder}/{safe_name}"
+    return storage.save_media(file_obj, subfolder, custom_allowed=custom_allowed)
+
+def delete_uploaded_file(path_or_url):
+    return storage.delete_media(path_or_url)
 
 def login_required(f):
     @wraps(f)
@@ -149,6 +144,15 @@ def login_required(f):
 @app.context_processor
 def inject_csrf():
     return dict(csrf_token=generate_csrf_token)
+
+# --- Media URL Helper & Jinja Filter ---
+@app.template_filter('media_url')
+def media_url_filter(path):
+    return storage.resolve_media_url(path)
+
+@app.context_processor
+def inject_media_url():
+    return dict(media_url=storage.resolve_media_url)
 
 # --- Customer Logos from Genuine Company Profile ---
 GENUINE_CUSTOMERS = [
@@ -176,7 +180,7 @@ def inject_company_info():
         pass
 
     phone_primary = content_map.get('phone_primary', '+91-9991535590')
-    phone_secondary = content_map.get('phone_secondary', '+91-8930294103')
+    phone_secondary = content_map.get('phone_secondary', '+91-9991535590')
     phone_p_clean = re.sub(r'[\s\-\(\)\+]', '', phone_primary)
     phone_s_clean = re.sub(r'[\s\-\(\)\+]', '', phone_secondary)
 
@@ -568,6 +572,8 @@ def admin_product_edit(id):
         primary_file = request.files.get('primary_image')
         new_image = save_uploaded_file(primary_file, 'products')
         if new_image:
+            if image_path and image_path != new_image:
+                delete_uploaded_file(image_path)
             image_path = new_image
             # Update primary in product_images
             db.execute("UPDATE product_images SET is_primary = 0 WHERE product_id = ?", (id,))
@@ -640,8 +646,13 @@ def admin_product_delete(id):
     """Delete a product"""
     verify_csrf_token()
     db = get_db()
-    product = db.execute("SELECT title FROM products WHERE id = ?", (id,)).fetchone()
+    product = db.execute("SELECT title, image FROM products WHERE id = ?", (id,)).fetchone()
     if product:
+        if product['image']:
+            delete_uploaded_file(product['image'])
+        photos = db.execute("SELECT image_path FROM product_images WHERE product_id = ?", (id,)).fetchall()
+        for p in photos:
+            delete_uploaded_file(p['image_path'])
         db.execute("DELETE FROM product_images WHERE product_id = ?", (id,))
         db.execute("DELETE FROM products WHERE id = ?", (id,))
         db.commit()
@@ -741,6 +752,8 @@ def admin_gallery_edit(id):
         file_obj = request.files.get('media_file')
         new_file = save_uploaded_file(file_obj, 'gallery')
         if new_file:
+            if file_path and file_path != new_file:
+                delete_uploaded_file(file_path)
             file_path = new_file
 
         db.execute('''
@@ -776,6 +789,9 @@ def admin_gallery_delete(id):
     """Delete gallery item"""
     verify_csrf_token()
     db = get_db()
+    item = db.execute("SELECT file_path FROM gallery WHERE id = ?", (id,)).fetchone()
+    if item and item['file_path']:
+        delete_uploaded_file(item['file_path'])
     db.execute("DELETE FROM gallery WHERE id = ?", (id,))
     db.commit()
     flash('Gallery media deleted successfully.', 'success')
@@ -842,6 +858,8 @@ def admin_certificate_edit(id):
         file_obj = request.files.get('cert_file')
         new_file = save_uploaded_file(file_obj, 'certificates', {'pdf', 'png', 'jpg', 'jpeg', 'webp'})
         if new_file:
+            if file_path and file_path != new_file:
+                delete_uploaded_file(file_path)
             file_path = new_file
 
         db.execute('''
@@ -862,6 +880,9 @@ def admin_certificate_delete(id):
     """Delete certificate"""
     verify_csrf_token()
     db = get_db()
+    cert = db.execute("SELECT file_path FROM certificates WHERE id = ?", (id,)).fetchone()
+    if cert and cert['file_path']:
+        delete_uploaded_file(cert['file_path'])
     db.execute("DELETE FROM certificates WHERE id = ?", (id,))
     db.commit()
     flash('Certificate deleted successfully.', 'success')
@@ -928,6 +949,8 @@ def admin_news_edit(id):
         file_obj = request.files.get('event_image')
         new_image = save_uploaded_file(file_obj, 'news')
         if new_image:
+            if image_path and image_path != new_image:
+                delete_uploaded_file(image_path)
             image_path = new_image
 
         db.execute('''
@@ -963,6 +986,9 @@ def admin_news_delete(id):
     """Delete news milestone"""
     verify_csrf_token()
     db = get_db()
+    item = db.execute("SELECT image FROM news_items WHERE id = ?", (id,)).fetchone()
+    if item and item['image']:
+        delete_uploaded_file(item['image'])
     db.execute("DELETE FROM news_items WHERE id = ?", (id,))
     db.commit()
     flash('News milestone deleted successfully.', 'success')

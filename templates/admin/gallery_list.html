@@ -38,7 +38,7 @@
                     <i class="bi bi-play-btn fs-4 text-danger"></i>
                   </div>
                 {% else %}
-                  <img src="{{ url_for('static', filename='images/' + item.file_path) if not item.file_path.startswith('uploads/') else url_for('static', filename=item.file_path) }}" alt="{{ item.title }}" class="thumb-table-sm">
+                  <img src="{{ item.file_path | media_url }}" alt="{{ item.title }}" class="thumb-table-sm">
                 {% endif %}
               </td>
               <td>

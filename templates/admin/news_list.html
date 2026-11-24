@@ -34,7 +34,7 @@
             <tr>
               <td>
                 {% if n.image %}
-                  <img src="{{ url_for('static', filename='images/' + n.image) if not n.image.startswith('uploads/') else url_for('static', filename=n.image) }}" alt="{{ n.title }}" class="thumb-table-sm">
+                  <img src="{{ n.image | media_url }}" alt="{{ n.title }}" class="thumb-table-sm">
                 {% else %}
                   <div class="thumb-table-sm bg-light text-muted d-flex align-items-center justify-content-center">
                     <i class="bi bi-image"></i>

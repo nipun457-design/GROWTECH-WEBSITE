@@ -290,7 +290,7 @@ def migrate():
             'nic_code': '28221 (Metal-forming machinery & machine tools)',
             'email': 'growtechengineers911@gmail.com',
             'phone_primary': '+91-9991535590',
-            'phone_secondary': '+91-8930294103',
+            'phone_secondary': '+91-9991535590',
             'location': 'Main Market, Fazalwas, Tauru Road, Pachgaon, Manesar, Gurugram, Haryana – 122413, India',
             'city': 'Manesar, Gurugram',
             'state': 'Haryana',

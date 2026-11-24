@@ -48,7 +48,7 @@
             {% if item.file_type == 'video' %}
               <div class="p-3 text-muted"><i class="bi bi-file-earmark-play fs-1 text-danger"></i><br>Video File: {{ item.file_path }}</div>
             {% else %}
-              <img src="{{ url_for('static', filename='images/' + item.file_path) if not item.file_path.startswith('uploads/') else url_for('static', filename=item.file_path) }}" alt="{{ item.title }}" style="max-height: 200px; max-width: 100%;" class="rounded">
+              <img src="{{ item.file_path | media_url }}" alt="{{ item.title }}" style="max-height: 200px; max-width: 100%;" class="rounded">
             {% endif %}
             <small class="text-muted d-block mt-1">Current file: {{ item.file_path }}</small>
           </div>

@@ -157,12 +157,79 @@ def sqlite_to_postgres():
     print("\nDirect SQLite -> PostgreSQL migration finished successfully!")
     return True
 
+def migrate_media_to_supabase(dry_run=False, confirmed=False):
+    """Safely migrates local uploaded files to Supabase Storage and updates DB URLs"""
+    import storage
+    if not storage.is_supabase_storage_enabled():
+        print("Error: Supabase Storage is not configured. Set SUPABASE_URL and SUPABASE_KEY first.")
+        return False
+
+    if not confirmed and not dry_run:
+        print("Warning: This will upload local media to Supabase Storage and update database records.")
+        response = input("Do you want to proceed? [y/N]: ").strip().lower()
+        if response != 'y':
+            print("Migration aborted by user.")
+            return False
+
+    conn = db.get_connection()
+    upload_base = storage.get_upload_base()
+    migrated_count = 0
+
+    media_targets = [
+        ('products', 'image', 'id'),
+        ('product_images', 'image_path', 'id'),
+        ('gallery', 'file_path', 'id'),
+        ('certificates', 'file_path', 'id'),
+        ('news_items', 'image', 'id')
+    ]
+
+    for tbl, col, pk in media_targets:
+        try:
+            cursor = conn.execute(f"SELECT {pk}, {col} FROM {tbl}")
+            for row in cursor.fetchall():
+                row_id = row[pk]
+                val = row[col]
+                if not val or val.startswith('http://') or val.startswith('https://') or storage.is_protected_asset(val):
+                    continue
+
+                if val.startswith('uploads/'):
+                    relative_path = val[len('uploads/'):]
+                    local_file = os.path.join(upload_base, relative_path)
+                    if os.path.isfile(local_file):
+                        print(f"[{tbl}.{col} #{row_id}] Found local file: {val}")
+                        if dry_run:
+                            print(f"  -> (Dry-run) Would upload {local_file} to Supabase as {relative_path}")
+                            migrated_count += 1
+                            continue
+
+                        try:
+                            with open(local_file, 'rb') as f:
+                                file_bytes = f.read()
+                            public_url = storage.upload_to_supabase(file_bytes, relative_path)
+                            conn.execute(f"UPDATE {tbl} SET {col} = ? WHERE {pk} = ?", (public_url, row_id))
+                            print(f"  -> Uploaded successfully: {public_url}")
+                            migrated_count += 1
+                        except Exception as e:
+                            print(f"  -> Upload failed: {e}")
+        except Exception as e:
+            print(f"Notice: Table '{tbl}' could not be processed: {e}")
+
+    if not dry_run:
+        conn.commit()
+    conn.close()
+    action_label = "(Dry-run) Identified" if dry_run else "Successfully migrated"
+    print(f"\nMedia migration completed. {action_label} {migrated_count} items.")
+    return True
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="GROWTECH ENGINEERS Database Backup and Migration Tool")
     parser.add_argument('--backup', action='store_true', help="Export all tables to a timestamped JSON backup file")
     parser.add_argument('--output', help="Custom output path for backup JSON file")
     parser.add_argument('--restore', help="Restore data from a specified JSON backup file")
     parser.add_argument('--sqlite-to-postgres', action='store_true', help="Directly migrate from local SQLite to PostgreSQL (requires DATABASE_URL)")
+    parser.add_argument('--migrate-media-to-supabase', action='store_true', help="Migrate local uploaded files to Supabase Storage (requires SUPABASE_URL and SUPABASE_KEY)")
+    parser.add_argument('--dry-run', action='store_true', help="Simulate media migration without uploading or updating DB")
+    parser.add_argument('--confirm', action='store_true', help="Confirm migration without interactive prompt")
 
     args = parser.parse_args()
 
@@ -172,6 +239,8 @@ if __name__ == '__main__':
         restore_from_json(args.restore)
     elif args.sqlite_to_postgres:
         sqlite_to_postgres()
+    elif args.migrate_media_to_supabase:
+        migrate_media_to_supabase(dry_run=args.dry_run, confirmed=args.confirm)
     else:
         # Default action: run backup
         print("No specific action selected. Generating standard database backup...")

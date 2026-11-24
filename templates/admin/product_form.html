@@ -98,7 +98,7 @@
         
         {% if product and product.image %}
           <div class="mb-3 text-center bg-light p-2 rounded border">
-            <img src="{{ url_for('static', filename='images/' + product.image) if not product.image.startswith('uploads/') else url_for('static', filename=product.image) }}" alt="Current Image" class="img-fluid rounded" style="max-height: 180px;">
+            <img src="{{ product.image | media_url }}" alt="Current Image" class="img-fluid rounded" style="max-height: 180px;">
             <small class="text-muted d-block mt-1">Current image: {{ product.image }}</small>
           </div>
         {% endif %}
@@ -124,7 +124,7 @@
             <div class="d-flex flex-wrap gap-2">
               {% for img in additional_images %}
                 <div class="position-relative border p-1 rounded bg-light text-center">
-                  <img src="{{ url_for('static', filename='images/' + img.image_path) if not img.image_path.startswith('uploads/') else url_for('static', filename=img.image_path) }}" alt="Additional Photo" style="width: 70px; height: 70px; object-fit: cover;">
+                  <img src="{{ img.image_path | media_url }}" alt="Additional Photo" style="width: 70px; height: 70px; object-fit: cover;">
                 </div>
               {% endfor %}
             </div>

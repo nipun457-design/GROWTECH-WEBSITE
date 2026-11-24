@@ -282,7 +282,7 @@
           <div class="product-card">
             <div class="product-img-wrap">
               <span class="product-badge-tag">{{ product.tag }}</span>
-              <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.title }}">
+              <img src="{{ product.image | media_url }}" alt="{{ product.title }}">
             </div>
             <div class="product-body">
               <h4 class="product-title">{{ product.title }}</h4>

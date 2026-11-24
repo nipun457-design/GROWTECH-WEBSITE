@@ -230,7 +230,7 @@ class Phase2AdminDashboardTestCase(unittest.TestCase):
             'udyam_type': 'Micro Enterprise',
             'nic_code': '28221',
             'phone_primary': '+91-9991535590',
-            'phone_secondary': '+91-8930294103',
+            'phone_secondary': '+91-9991535590',
             'email': 'growtechengineers911@gmail.com',
             'location': 'Main Market, Fazalwas, Tauru Road, Pachgaon, Manesar, Gurugram, Haryana - 122413',
             'facilities_area': new_facilities,
