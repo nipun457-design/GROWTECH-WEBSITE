@@ -18,6 +18,21 @@ class GrowtechEngineersTestCase(unittest.TestCase):
             self.assertIn(b'GROWTECH ENGINEERS', response.data)
             self.assertIn(b'GTE', response.data)
 
+    def test_homepage_regression_and_components(self):
+        """Regression test: Homepage renders HTTP 200 without 500 error or template failures"""
+        original_debug = app.config.get('DEBUG', False)
+        app.config['DEBUG'] = False
+        res = self.client.get('/')
+        self.assertEqual(res.status_code, 200)
+        self.assertNotIn(b'Temporary Processing Error', res.data)
+        self.assertNotIn(b'500 - System Error', res.data)
+        self.assertIn(b'Precision Engineering', res.data)
+        self.assertIn(b'Jigs and Fixtures', res.data)
+        self.assertIn(b'Receiving Gauges', res.data)
+        self.assertIn(b'Pachgaon', res.data)
+        self.assertIn(b'9991535590', res.data)
+        app.config['DEBUG'] = original_debug
+
     def test_company_details_present(self):
         """Verify key required company information is rendered across pages"""
         response = self.client.get('/')

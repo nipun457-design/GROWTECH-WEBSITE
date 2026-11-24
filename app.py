@@ -17,6 +17,10 @@ import storage
 
 app = Flask(__name__)
 
+# Register media_url directly on Jinja environment (filter and global function)
+app.jinja_env.filters['media_url'] = storage.resolve_media_url
+app.jinja_env.globals['media_url'] = storage.resolve_media_url
+
 # --- Production Environment Configuration ---
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'growtech-engineers-industrial-sec-2023')
 app.config['DEBUG'] = os.environ.get('FLASK_DEBUG', 'false').lower() in ('true', '1', 't')
@@ -275,7 +279,8 @@ def home():
         'index.html',
         active_page='home',
         featured_products=featured_products,
-        all_products=all_products
+        all_products=all_products,
+        media_url=storage.resolve_media_url
     )
 
 @app.route('/company')
