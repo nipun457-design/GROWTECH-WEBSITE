@@ -176,5 +176,108 @@ class ProductionReadinessTestCase(unittest.TestCase):
         except OSError:
             pass
 
+    # =========================================================================
+    # 7. REGRESSION TESTS: POSTGRESQL INSERT & MIGRATION REPEATABILITY
+    # =========================================================================
+
+    def test_insert_table_name_extraction(self):
+        """Verify extract_table_name_from_insert extracts clean table names across all SQL formats"""
+        cases = [
+            ("INSERT INTO company_content (key_name, value) VALUES (?, ?)", "company_content"),
+            ("INSERT INTO \"company_content\" (key_name, value) VALUES (?, ?)", "company_content"),
+            ("INSERT INTO public.company_content (key_name, value) VALUES (?, ?)", "company_content"),
+            ("INSERT INTO \"public\".\"company_content\" (key_name, value) VALUES (?, ?)", "company_content"),
+            ("INSERT INTO products (title, slug) VALUES (?, ?)", "products"),
+            ("INSERT INTO `users` (username) VALUES (?)", "users"),
+            ("INSERT INTO enquiries (name, email) VALUES (?, ?)", "enquiries"),
+            ("INSERT INTO gallery (title, file_path) VALUES (?, ?)", "gallery"),
+        ]
+        for query, expected in cases:
+            extracted = db.extract_table_name_from_insert(query)
+            self.assertEqual(extracted, expected, f"Failed for query: {query}")
+
+    def test_table_has_id_column_resolution(self):
+        """Verify table_has_id_column correctly identifies tables with and without an id column"""
+        # company_content does NOT have an id column
+        self.assertFalse(db.table_has_id_column("company_content"))
+        self.assertFalse(db.table_has_id_column("COMPANY_CONTENT"))
+
+        # Other 7 core tables DO have an id column
+        tables_with_id = ["users", "enquiries", "products", "product_images", "gallery", "certificates", "news_items"]
+        for tbl in tables_with_id:
+            self.assertTrue(db.table_has_id_column(tbl), f"Expected {tbl} to have id column")
+            self.assertTrue(db.table_has_id_column(tbl.upper()), f"Expected {tbl.upper()} to have id column")
+
+    def test_postgres_insert_query_transformation(self):
+        """Verify that CursorWrapper only appends RETURNING id for tables that have an id column"""
+        class MockCursor:
+            def __init__(self):
+                self.last_query = None
+                self.last_params = None
+                self.description = None
+            def execute(self, query, params=None):
+                self.last_query = query
+                self.last_params = params
+            def fetchone(self):
+                return (101,)
+
+        mock_cur = MockCursor()
+        wrapper = db.CursorWrapper(mock_cur, is_pg=True)
+
+        # 1. Insert into company_content -> MUST NOT have RETURNING id
+        wrapper.execute("INSERT INTO company_content (key_name, value) VALUES (?, ?)", ("test_key", "test_val"))
+        self.assertNotIn("RETURNING", mock_cur.last_query.upper(), "RETURNING id was incorrectly added to company_content!")
+        self.assertEqual(mock_cur.last_query.strip(), "INSERT INTO company_content (key_name, value) VALUES (%s, %s)")
+        self.assertIsNone(wrapper.lastrowid)
+
+        # 2. Insert into products -> MUST have RETURNING id
+        wrapper.execute("INSERT INTO products (title, slug) VALUES (?, ?)", ("Tool", "tool"))
+        self.assertIn("RETURNING id", mock_cur.last_query, "RETURNING id should be added to products!")
+        self.assertEqual(wrapper.lastrowid, 101)
+
+        # 3. Insert into users with explicit RETURNING -> MUST NOT duplicate RETURNING id
+        wrapper.execute("INSERT INTO users (username) VALUES (?) RETURNING username", ("admin",))
+        self.assertEqual(mock_cur.last_query.upper().count("RETURNING"), 1)
+        self.assertNotIn("RETURNING id", mock_cur.last_query)
+
+    def test_migration_repeatability_and_no_duplicates(self):
+        """Verify migrate_phase2.migrate() can be executed multiple times without creating duplicate records"""
+        import migrate_phase2
+        conn = db.get_connection()
+
+        # Run 1st migration
+        migrate_phase2.migrate()
+        counts_run1 = {}
+        for tbl in ['products', 'news_items', 'gallery', 'certificates', 'company_content']:
+            c = conn.execute(f"SELECT COUNT(*) as cnt FROM {tbl}")
+            counts_run1[tbl] = c.fetchone()['cnt']
+
+        # Run 2nd migration
+        migrate_phase2.migrate()
+        counts_run2 = {}
+        for tbl in ['products', 'news_items', 'gallery', 'certificates', 'company_content']:
+            c = conn.execute(f"SELECT COUNT(*) as cnt FROM {tbl}")
+            counts_run2[tbl] = c.fetchone()['cnt']
+
+        # Run 3rd migration
+        migrate_phase2.migrate()
+        counts_run3 = {}
+        for tbl in ['products', 'news_items', 'gallery', 'certificates', 'company_content']:
+            c = conn.execute(f"SELECT COUNT(*) as cnt FROM {tbl}")
+            counts_run3[tbl] = c.fetchone()['cnt']
+
+        conn.close()
+
+        # Counts must be completely identical across all runs
+        self.assertEqual(counts_run1, counts_run2, f"Migration run 2 created duplicate records: {counts_run1} vs {counts_run2}")
+        self.assertEqual(counts_run2, counts_run3, f"Migration run 3 created duplicate records: {counts_run2} vs {counts_run3}")
+
+        # Ensure tables actually contain their expected initial seed counts
+        self.assertGreaterEqual(counts_run1['products'], 6)
+        self.assertGreaterEqual(counts_run1['news_items'], 4)
+        self.assertGreaterEqual(counts_run1['gallery'], 15)
+        self.assertGreaterEqual(counts_run1['certificates'], 2)
+        self.assertGreaterEqual(counts_run1['company_content'], 20)
+
 if __name__ == '__main__':
     unittest.main()

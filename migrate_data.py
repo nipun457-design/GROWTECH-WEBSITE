@@ -93,26 +93,46 @@ def restore_from_json(json_path, target_conn=None):
         inserted = 0
         for r in rows:
             cols = list(r.keys())
-            vals = [r[c] for c in cols]
-            placeholders = ", ".join(["?" for _ in cols])
-            col_names = ", ".join(cols)
 
             if tbl == 'company_content':
+                # PostgreSQL schema does not have an 'id' column for company_content
+                if conn.is_pg:
+                    cols = [c for c in cols if c != 'id']
+                vals = [r[c] for c in cols]
+                placeholders = ", ".join(["?" for _ in cols])
+                col_names = ", ".join(cols)
                 query = f"""
                     INSERT INTO {tbl} ({col_names}) VALUES ({placeholders})
                     ON CONFLICT(key_name) DO UPDATE SET value = EXCLUDED.value
                 """
             elif tbl == 'users':
+                vals = [r[c] for c in cols]
+                placeholders = ", ".join(["?" for _ in cols])
+                col_names = ", ".join(cols)
                 query = f"""
                     INSERT INTO {tbl} ({col_names}) VALUES ({placeholders})
                     ON CONFLICT(username) DO NOTHING
                 """
             elif tbl == 'products':
+                vals = [r[c] for c in cols]
+                placeholders = ", ".join(["?" for _ in cols])
+                col_names = ", ".join(cols)
                 query = f"""
                     INSERT INTO {tbl} ({col_names}) VALUES ({placeholders})
                     ON CONFLICT(slug) DO NOTHING
                 """
+            elif 'id' in cols:
+                vals = [r[c] for c in cols]
+                placeholders = ", ".join(["?" for _ in cols])
+                col_names = ", ".join(cols)
+                query = f"""
+                    INSERT INTO {tbl} ({col_names}) VALUES ({placeholders})
+                    ON CONFLICT(id) DO NOTHING
+                """
             else:
+                vals = [r[c] for c in cols]
+                placeholders = ", ".join(["?" for _ in cols])
+                col_names = ", ".join(cols)
                 query = f"INSERT INTO {tbl} ({col_names}) VALUES ({placeholders})"
 
             try:
@@ -124,6 +144,15 @@ def restore_from_json(json_path, target_conn=None):
 
         conn.commit()
         print(f"Imported {inserted} records into '{tbl}'.")
+
+    # In PostgreSQL, synchronize serial sequences with max existing id
+    if conn.is_pg:
+        for seq_tbl in ['users', 'enquiries', 'products', 'product_images', 'gallery', 'certificates', 'news_items']:
+            try:
+                conn.execute(f"SELECT setval(pg_get_serial_sequence('{seq_tbl}', 'id'), COALESCE(max(id), 1)) FROM {seq_tbl};")
+            except Exception:
+                pass
+        conn.commit()
 
     if not target_conn:
         conn.close()

@@ -49,6 +49,9 @@ class RowWrapper:
     def __iter__(self):
         return iter(self._dict)
 
+    def __len__(self):
+        return len(self._dict)
+
     def __contains__(self, key):
         return key in self._dict
 
@@ -78,6 +81,62 @@ def translate_query(query, to_postgres=False):
     translated = ''.join(parts)
     return translated
 
+def extract_table_name_from_insert(query):
+    """Extracts clean lowercase table name from an INSERT INTO query string"""
+    m = re.search(r'INSERT\s+INTO\s+([^\s\(\)]+)', query, re.IGNORECASE)
+    if not m:
+        return None
+    raw = m.group(1).strip()
+    parts = raw.split('.')
+    table_part = parts[-1]
+    return table_part.strip().strip('"').strip("'").strip('`').lower()
+
+# Known tables with and without an auto-incrementing/serial 'id' column
+TABLES_WITH_ID = {
+    'users', 'enquiries', 'products', 'product_images',
+    'gallery', 'certificates', 'news_items'
+}
+
+TABLES_WITHOUT_ID = {
+    'company_content'
+}
+
+# Cache for table -> boolean (has 'id' column)
+_TABLE_HAS_ID_CACHE = {
+    'company_content': False,
+    'users': True,
+    'enquiries': True,
+    'products': True,
+    'product_images': True,
+    'gallery': True,
+    'certificates': True,
+    'news_items': True,
+}
+
+def table_has_id_column(table_name, cursor=None):
+    """Determines whether a target table possesses an 'id' column."""
+    if not table_name:
+        return False
+    table_lower = table_name.lower()
+    if table_lower in _TABLE_HAS_ID_CACHE:
+        return _TABLE_HAS_ID_CACHE[table_lower]
+
+    has_id = False
+    if cursor and hasattr(cursor, 'connection') and cursor.connection:
+        try:
+            raw_conn = cursor.connection
+            with raw_conn.cursor() as check_cur:
+                check_cur.execute("""
+                    SELECT 1 FROM information_schema.columns
+                    WHERE table_name = %s AND column_name = 'id'
+                    LIMIT 1;
+                """, (table_lower,))
+                has_id = bool(check_cur.fetchone())
+        except Exception:
+            has_id = False
+    _TABLE_HAS_ID_CACHE[table_lower] = has_id
+    return has_id
+
 class CursorWrapper:
     """Wraps cursor to provide consistent API (lastrowid, fetchone, fetchall, execute) across engines"""
     def __init__(self, cursor, is_pg=False, lastrowid=None):
@@ -90,8 +149,12 @@ class CursorWrapper:
         is_insert = translated_query.strip().upper().startswith("INSERT INTO")
         has_returning = "RETURNING" in translated_query.upper()
 
+        # In PostgreSQL, only append RETURNING id if the target table actually has an 'id' column
+        # and the query does not already specify its own RETURNING clause.
         if self.is_pg and is_insert and not has_returning:
-            translated_query = translated_query.rstrip().rstrip(';') + " RETURNING id;"
+            table_name = extract_table_name_from_insert(translated_query)
+            if table_name and table_has_id_column(table_name, cursor=self.cursor):
+                translated_query = translated_query.rstrip().rstrip(';') + " RETURNING id;"
 
         if params:
             self.cursor.execute(translated_query, params)
@@ -99,13 +162,15 @@ class CursorWrapper:
             self.cursor.execute(translated_query)
 
         if self.is_pg:
-            if is_insert:
+            if is_insert and ("RETURNING" in translated_query.upper()):
                 try:
                     res = self.cursor.fetchone()
                     if res:
-                        self.lastrowid = res[0] if not isinstance(res, dict) else res.get('id')
+                        self.lastrowid = res[0] if not isinstance(res, dict) else res.get('id', res[0])
                 except Exception:
                     pass
+            else:
+                self.lastrowid = None
         else:
             self.lastrowid = getattr(self.cursor, 'lastrowid', None)
 
