@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}News & Factory Milestones | GROWTECH ENGINEERS, Manesar{% endblock %}
+
+{% block content %}
+<!-- Subpage Header Banner -->
+<section class="subpage-banner">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8">
+        <h1>News &amp; Factory Milestones</h1>
+        <p>Operational updates, plant milestones, and verified manufacturing developments at Growtech Engineers.</p>
+        <div class="subpage-breadcrumbs">
+          <a href="{{ url_for('home') }}">Home</a> &gt; <span>News &amp; Events</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- News & Events Image-Based Gallery Section -->
+<section class="py-5 bg-white">
+  <div class="container py-2">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-5">
+      <div>
+        <div class="section-badge">Company Updates</div>
+        <h2 class="section-title">Verified Manufacturing Milestones</h2>
+        <p class="section-subtitle mb-0">
+          Documenting verified operational milestones, government registration, and shop floor capability additions.
+        </p>
+      </div>
+      <div class="mt-3 mt-md-0">
+        <span class="badge bg-light text-navy border px-3 py-2">
+          <i class="bi bi-clock-history text-success me-1"></i> Operations Commenced: Sept 2023
+        </span>
+      </div>
+    </div>
+
+    <!-- Gallery Grid -->
+    <div class="row g-4">
+      {% for item in news_items %}
+        <div class="col-md-6">
+          <div class="news-card">
+            <div class="position-relative">
+              <img src="{{ url_for('static', filename='images/' + item.image) }}" alt="{{ item.title }}" class="news-img">
+              <span class="badge bg-navy text-white position-absolute top-0 start-0 m-3" style="background-color: var(--gt-navy);">
+                {{ item.category }}
+              </span>
+            </div>
+            <div class="news-body">
+              <div class="news-date">
+                <i class="bi bi-calendar3 me-1"></i> {{ item.date }}
+              </div>
+              <h3 class="news-title">{{ item.title }}</h3>
+              <p class="news-summary text-secondary">{{ item.summary }}</p>
+              
+              <div class="mt-3 pt-3 border-top d-flex justify-content-between align-items-center">
+                {% if item.is_real %}
+                  <small class="text-success fw-semibold"><i class="bi bi-check-circle-fill me-1"></i> Confirmed Record</small>
+                {% else %}
+                  <small class="text-muted fst-italic"><i class="bi bi-info-circle me-1"></i> Owner Reserved Slot</small>
+                {% endif %}
+                <a href="{{ url_for('contact') }}?subject={{ item.title|urlencode }}" class="text-navy fw-semibold small">
+                  Enquire on Capabilities <i class="bi bi-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Plant Visit & Client Review Callout -->
+    <div class="mt-5 p-4 border bg-light rounded shadow-sm">
+      <div class="row align-items-center g-3">
+        <div class="col-lg-8">
+          <h5 class="text-navy mb-1"><i class="bi bi-building-check text-success me-2"></i>Schedule a Plant Visit &amp; Technical Review</h5>
+          <p class="small text-muted mb-0">
+            Clients, procurement teams, and quality engineers are welcome to visit our workshop at Pachgaon, Manesar to inspect our toolroom machinery, review ongoing fixture tryouts, and discuss tooling requirements.
+          </p>
+        </div>
+        <div class="col-lg-4 text-lg-end">
+          <a href="{{ url_for('contact') }}" class="btn btn-gt-primary btn-sm">
+            <i class="bi bi-calendar-event me-1"></i> Coordinate a Visit
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}500 - System Error | GROWTECH ENGINEERS{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-light min-vh-50 d-flex align-items-center">
+  <div class="container py-5 text-center">
+    <div class="card p-5 border shadow-sm mx-auto bg-white" style="max-width: 650px;">
+      <div class="text-navy display-1 fw-bold mb-3"><i class="bi bi-exclamation-triangle-fill text-warning"></i> 500</div>
+      <h2 class="h3 text-navy mb-3">Temporary Processing Error</h2>
+      <p class="text-secondary mb-4">
+        Our engineering server encountered an unexpected error while processing your request. Our technical team has been notified. Please try again shortly or contact us directly.
+      </p>
+      <div class="d-flex justify-content-center gap-3 flex-wrap">
+        <a href="{{ url_for('home') }}" class="btn btn-gt-primary">
+          <i class="bi bi-house-door-fill me-1"></i> Return to Homepage
+        </a>
+        <a href="tel:{{ company.phone_primary_raw }}" class="btn btn-gt-success">
+          <i class="bi bi-telephone-fill me-1"></i> Call {{ company.phone_primary }}
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

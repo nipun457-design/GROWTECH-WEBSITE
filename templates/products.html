@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Products & Manufacturing Capabilities | GROWTECH ENGINEERS, Manesar{% endblock %}
+
+{% block content %}
+<!-- Subpage Header Banner -->
+<section class="subpage-banner">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8">
+        <h1>Products &amp; Manufacturing Capabilities</h1>
+        <p>Custom-engineered tooling, precision inspection gauges, stamping dies, and industrial engineering solutions.</p>
+        <div class="subpage-breadcrumbs">
+          <a href="{{ url_for('home') }}">Home</a> &gt; <span>Products</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Category Filter Tabs Bar -->
+<section class="py-3 bg-light border-bottom sticky-top" style="top: 68px; z-index: 1020;">
+  <div class="container">
+    <div class="d-flex flex-wrap align-items-center justify-content-center gap-2">
+      <button class="btn btn-sm btn-gt-primary category-filter-btn active" data-filter="all">
+        All Categories (6)
+      </button>
+      <button class="btn btn-sm btn-gt-outline category-filter-btn" data-filter="jigs-fixtures">
+        Jigs &amp; Fixtures
+      </button>
+      <button class="btn btn-sm btn-gt-outline category-filter-btn" data-filter="receiving-gauges">
+        Receiving Gauges
+      </button>
+      <button class="btn btn-sm btn-gt-outline category-filter-btn" data-filter="press-tools">
+        Press Tools &amp; Dies
+      </button>
+      <button class="btn btn-sm btn-gt-outline category-filter-btn" data-filter="hydraulic-presses">
+        Hydraulic Presses
+      </button>
+      <button class="btn btn-sm btn-gt-outline category-filter-btn" data-filter="trolleys-racks">
+        Trolleys &amp; Racks
+      </button>
+      <button class="btn btn-sm btn-gt-outline category-filter-btn" data-filter="engineering-solutions">
+        Engineering Solutions
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Products Detailed Catalog -->
+<section class="py-5 bg-white">
+  <div class="container py-2">
+    <div class="row g-5">
+      {% for product in products %}
+        <div class="col-12 product-grid-item" data-category="{{ product.id }}" id="{{ product.id }}">
+          <div class="card border shadow-sm overflow-hidden">
+            <div class="row g-0">
+              <div class="col-lg-5 bg-light p-3 d-flex flex-column justify-content-center border-end">
+                <div class="position-relative">
+                  <span class="product-badge-tag">{{ product.tag }}</span>
+                  <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.title }}" class="img-fluid rounded border shadow-sm" style="width: 100%; height: 260px; object-fit: cover;">
+                </div>
+                <div class="mt-2 text-center">
+                  {% if product.is_real_photo %}
+                    <small class="text-success fw-semibold"><i class="bi bi-camera-fill me-1"></i>{{ product.status_note }}</small>
+                  {% else %}
+                    <small class="text-muted fst-italic"><i class="bi bi-info-circle me-1"></i>{{ product.status_note }}</small>
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="col-lg-7 p-4 d-flex flex-column justify-content-between">
+                <div>
+                  <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+                    <span class="badge bg-light text-navy border px-2 py-1"><i class="bi bi-tag-fill text-success me-1"></i>{{ product.category }}</span>
+                    <span class="text-muted small"><strong>ID:</strong> GE-{{ product.id|upper }}</span>
+                  </div>
+
+                  <h3 class="text-navy h4 mb-2">{{ product.title }}</h3>
+                  <p class="text-secondary mb-3">{{ product.description }}</p>
+
+                  <h6 class="text-navy fw-bold mb-2">Key Engineering Features:</h6>
+                  <ul class="row g-2 list-unstyled mb-3 ps-1">
+                    {% for feature in product.features %}
+                      <li class="col-sm-6 small text-secondary d-flex align-items-start gap-2">
+                        <i class="bi bi-check-circle-fill text-success mt-1"></i>
+                        <span>{{ feature }}</span>
+                      </li>
+                    {% endfor %}
+                  </ul>
+
+                  <h6 class="text-navy fw-bold mb-2">Typical Industrial Applications:</h6>
+                  <div class="d-flex flex-wrap gap-1 mb-4">
+                    {% for app_item in product.applications %}
+                      <span class="badge bg-secondary text-white fw-normal">{{ app_item }}</span>
+                    {% endfor %}
+                  </div>
+                </div>
+
+                <div class="pt-3 border-top d-flex flex-wrap align-items-center justify-content-between gap-2">
+                  <div class="d-flex gap-2">
+                    <a href="{{ url_for('contact') }}?service={{ product.title }}&subject=Enquiry+regarding+{{ product.title|urlencode }}" class="btn btn-gt-success">
+                      <i class="bi bi-envelope-check-fill"></i> Send Product Enquiry
+                    </a>
+                    <a href="https://wa.me/919991535590?text=Hello%20Growtech%20Engineers,%20I%20am%20interested%20in%20technical%20specs%20for%20{{ product.title|urlencode }}." class="btn btn-gt-outline" target="_blank" rel="noopener">
+                      <i class="bi bi-whatsapp text-success"></i> WhatsApp Enquiry
+                    </a>
+                  </div>
+                  <small class="text-muted">Drawing Review Available</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Custom Manufacturing / Drawing Review Callout -->
+<section class="py-5 bg-light border-top">
+  <div class="container py-2">
+    <div class="card p-4 p-md-5 bg-white border text-center shadow-sm">
+      <div class="section-badge mx-auto">Custom Manufacturing</div>
+      <h2 class="text-navy h3 mb-2">Have Specific Component Drawings or Part Samples?</h2>
+      <p class="text-muted max-w-700 mx-auto mb-4" style="max-width: 680px;">
+        Growtech Engineers specializes in custom manufacturing based directly on customer 2D drafting, 3D CAD files (STEP / IGES), or component physical samples. We provide prompt feasibility assessment, tool design proposals, and accurate cost estimates.
+      </p>
+      <div class="d-flex flex-wrap justify-content-center gap-3">
+        <a href="{{ url_for('contact') }}" class="btn btn-gt-primary">
+          <i class="bi bi-file-earmark-arrow-up"></i> Submit Technical Drawings for Review
+        </a>
+        <a href="tel:{{ company.phone_primary_raw }}" class="btn btn-gt-outline">
+          <i class="bi bi-telephone-fill"></i> Speak Directly to Mr. Naresh Kumar
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

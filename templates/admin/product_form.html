@@ -1,0 +1,152 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}{% if product %}Edit Product: {{ product.title }}{% else %}Add New Product{% endif %}{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+  <a href="{{ url_for('admin_products') }}" class="btn btn-sm btn-outline-secondary mb-2">
+    <i class="bi bi-arrow-left me-1"></i> Back to Products
+  </a>
+  <h4 class="fw-bold text-navy mb-1">{% if product %}Edit Product{% else %}Add New Product{% endif %}</h4>
+  <p class="text-muted small mb-0">Changes saved here will automatically reflect on the public website.</p>
+</div>
+
+<form action="{% if product %}{{ url_for('admin_product_edit', id=product.id) }}{% else %}{{ url_for('admin_product_add') }}{% endif %}" method="POST" enctype="multipart/form-data">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+  <div class="row g-4">
+    <!-- Left Column: Core Product Details -->
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm p-4 mb-4">
+        <h6 class="fw-bold text-navy mb-3">Product Overview</h6>
+        
+        <div class="mb-3">
+          <label for="title" class="form-label">Product Title <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="title" name="title" value="{{ product.title if product else '' }}" placeholder="e.g. Tandem Press Tools &amp; Dies" required>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label for="category" class="form-label">Product Category <span class="text-danger">*</span></label>
+            <select class="form-select" id="category" name="category" required>
+              <option value="Jigs & Fixtures" {% if product and product.category == 'Jigs & Fixtures' %}selected{% endif %}>Jigs &amp; Fixtures</option>
+              <option value="Receiving Gauges" {% if product and product.category == 'Receiving Gauges' %}selected{% endif %}>Receiving Gauges</option>
+              <option value="Sheet Metal Tooling" {% if product and product.category == 'Sheet Metal Tooling' %}selected{% endif %}>Sheet Metal Tooling / Press Tools</option>
+              <option value="Machinery & Tooling" {% if product and product.category == 'Machinery & Tooling' %}selected{% endif %}>Hydraulic Presses &amp; Machinery</option>
+              <option value="Material Handling" {% if product and product.category == 'Material Handling' %}selected{% endif %}>Material Handling / Trolleys &amp; Racks</option>
+              <option value="Industrial Solutions" {% if product and product.category == 'Industrial Solutions' %}selected{% endif %}>Engineering Solutions &amp; Consultancy</option>
+            </select>
+          </div>
+
+          <div class="col-md-6">
+            <label for="tag" class="form-label">Badge Tag / Subtitle</label>
+            <input type="text" class="form-control" id="tag" name="tag" value="{{ product.tag if product else '' }}" placeholder="e.g. Precision Tooling, Stamping Dies">
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="summary" class="form-label">Short Summary (Displayed on cards) <span class="text-danger">*</span></label>
+          <textarea class="form-control" id="summary" name="summary" rows="2" placeholder="Brief 1-2 sentence description..." required>{{ product.summary if product else '' }}</textarea>
+        </div>
+
+        <div class="mb-3">
+          <label for="description" class="form-label">Full Technical Description <span class="text-danger">*</span></label>
+          <textarea class="form-control" id="description" name="description" rows="5" placeholder="Detailed manufacturing specifications, steel grades, tolerances, construction details..." required>{{ product.description if product else '' }}</textarea>
+        </div>
+      </div>
+
+      <div class="card border-0 shadow-sm p-4 mb-4">
+        <h6 class="fw-bold text-navy mb-3">Technical Specifications &amp; Applications</h6>
+        
+        <div class="mb-3">
+          <label for="features" class="form-label">Key Engineering Features <small class="text-muted">(Enter one feature per line)</small></label>
+          <textarea class="form-control font-monospace small" id="features" name="features" rows="4" placeholder="Height checking fixtures with automation&#10;Hardened tool steel locating pins&#10;Poka-Yoke mistake proofing design">{{ features_text if features_text is defined else '' }}</textarea>
+        </div>
+
+        <div class="mb-3">
+          <label for="applications" class="form-label">Industrial Applications <small class="text-muted">(Enter one application per line)</small></label>
+          <textarea class="form-control font-monospace small" id="applications" name="applications" rows="3" placeholder="Automotive chassis assemblies&#10;BIW sheet metal welding lines&#10;CNC machining operations">{{ applications_text if applications_text is defined else '' }}</textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Media, Status & Visibility -->
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-sm p-4 mb-4">
+        <h6 class="fw-bold text-navy mb-3">Publishing &amp; Visibility</h6>
+
+        <div class="form-check form-switch mb-3">
+          <input class="form-check-input" type="checkbox" id="is_published" name="is_published" value="1" {% if not product or product.is_published %}checked{% endif %}>
+          <label class="form-check-label fw-semibold" for="is_published">Publish on Public Website</label>
+          <small class="text-muted d-block">Unpublished products are saved as drafts and hidden from visitors.</small>
+        </div>
+
+        <div class="form-check form-switch mb-3">
+          <input class="form-check-input" type="checkbox" id="is_featured" name="is_featured" value="1" {% if product and product.is_featured %}checked{% endif %}>
+          <label class="form-check-label fw-semibold" for="is_featured">Set as Featured Product</label>
+          <small class="text-muted d-block">Featured products are prominently displayed on the homepage.</small>
+        </div>
+
+        <div class="mb-3">
+          <label for="status_note" class="form-label">Status / Photo Verification Note</label>
+          <input type="text" class="form-control" id="status_note" name="status_note" value="{{ product.status_note if product else '' }}" placeholder="e.g. Delivered project photo verified">
+        </div>
+      </div>
+
+      <div class="card border-0 shadow-sm p-4 mb-4">
+        <h6 class="fw-bold text-navy mb-3">Primary Product Photograph</h6>
+        
+        {% if product and product.image %}
+          <div class="mb-3 text-center bg-light p-2 rounded border">
+            <img src="{{ url_for('static', filename='images/' + product.image) if not product.image.startswith('uploads/') else url_for('static', filename=product.image) }}" alt="Current Image" class="img-fluid rounded" style="max-height: 180px;">
+            <small class="text-muted d-block mt-1">Current image: {{ product.image }}</small>
+          </div>
+        {% endif %}
+
+        <div class="mb-3">
+          <label for="primary_image" class="form-label">{% if product %}Replace Primary Image{% else %}Upload Primary Image <span class="text-danger">*</span>{% endif %}</label>
+          <input class="form-control" type="file" id="primary_image" name="primary_image" accept=".png,.jpg,.jpeg,.webp" {% if not product %}required{% endif %}>
+          <small class="text-muted">Allowed: JPG, PNG, WEBP (Max 16MB)</small>
+        </div>
+      </div>
+
+      <div class="card border-0 shadow-sm p-4 mb-4">
+        <h6 class="fw-bold text-navy mb-3">Additional Photos &amp; Video</h6>
+        
+        <div class="mb-3">
+          <label for="additional_images" class="form-label">Upload Additional Photographs <small class="text-muted">(Multiple allowed)</small></label>
+          <input class="form-control" type="file" id="additional_images" name="additional_images" accept=".png,.jpg,.jpeg,.webp" multiple>
+        </div>
+
+        {% if additional_images %}
+          <div class="mb-3">
+            <label class="form-label small fw-bold">Existing Additional Photos:</label>
+            <div class="d-flex flex-wrap gap-2">
+              {% for img in additional_images %}
+                <div class="position-relative border p-1 rounded bg-light text-center">
+                  <img src="{{ url_for('static', filename='images/' + img.image_path) if not img.image_path.startswith('uploads/') else url_for('static', filename=img.image_path) }}" alt="Additional Photo" style="width: 70px; height: 70px; object-fit: cover;">
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+        <div class="mb-3">
+          <label for="video_url" class="form-label">Product Video URL <small class="text-muted">(Optional)</small></label>
+          <input type="url" class="form-control" id="video_url" name="video_url" value="{{ product.video_url if product else '' }}" placeholder="https://youtube.com/watch?v=...">
+          <small class="text-muted">Link to product video demonstration</small>
+        </div>
+      </div>
+
+      <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-primary btn-lg">
+          <i class="bi bi-save me-1"></i> Save Product Changes
+        </button>
+        <a href="{{ url_for('admin_products') }}" class="btn btn-outline-secondary">
+          Cancel
+        </a>
+      </div>
+    </div>
+  </div>
+</form>
+{% endblock %}

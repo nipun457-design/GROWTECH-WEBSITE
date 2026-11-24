@@ -1,0 +1,96 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}News & Events Management{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+  <div>
+    <h4 class="fw-bold mb-1 text-navy">News &amp; Factory Milestones</h4>
+    <p class="text-muted small mb-0">Manage verified milestones and operational updates displayed on the public gallery</p>
+  </div>
+  <div>
+    <a href="{{ url_for('admin_news_add') }}" class="btn btn-primary">
+      <i class="bi bi-plus-lg me-1"></i> Add News Milestone
+    </a>
+  </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-hover table-admin mb-0">
+      <thead>
+        <tr>
+          <th style="width: 70px;">Image</th>
+          <th>Milestone Title</th>
+          <th>Category</th>
+          <th>Display Date</th>
+          <th>Status</th>
+          <th class="text-end" style="min-width: 140px;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if news %}
+          {% for n in news %}
+            <tr>
+              <td>
+                {% if n.image %}
+                  <img src="{{ url_for('static', filename='images/' + n.image) if not n.image.startswith('uploads/') else url_for('static', filename=n.image) }}" alt="{{ n.title }}" class="thumb-table-sm">
+                {% else %}
+                  <div class="thumb-table-sm bg-light text-muted d-flex align-items-center justify-content-center">
+                    <i class="bi bi-image"></i>
+                  </div>
+                {% endif %}
+              </td>
+              <td>
+                <div class="fw-bold text-navy">{{ n.title }}</div>
+                <small class="text-muted text-truncate d-block" style="max-width: 320px;">{{ n.summary }}</small>
+              </td>
+              <td>
+                <span class="badge bg-light text-navy border">{{ n.category }}</span>
+              </td>
+              <td><small class="fw-semibold text-secondary">{{ n.date_display }}</small></td>
+              <td>
+                {% if n.is_published %}
+                  <span class="badge-admin-published">Published</span>
+                {% else %}
+                  <span class="badge-admin-draft">Draft</span>
+                {% endif %}
+              </td>
+              <td class="text-end">
+                <div class="d-inline-flex gap-1">
+                  <!-- Toggle Visibility -->
+                  <form action="{{ url_for('admin_news_toggle', id=n.id) }}" method="POST" class="d-inline">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-sm btn-light border py-1 px-2" title="Toggle Visibility">
+                      {% if n.is_published %}
+                        <i class="bi bi-eye-slash text-muted"></i>
+                      {% else %}
+                        <i class="bi bi-eye text-success"></i>
+                      {% endif %}
+                    </button>
+                  </form>
+                  <!-- Edit -->
+                  <a href="{{ url_for('admin_news_edit', id=n.id) }}" class="btn btn-sm btn-light border py-1 px-2" title="Edit">
+                    <i class="bi bi-pencil-fill text-primary"></i>
+                  </a>
+                  <!-- Delete -->
+                  <form action="{{ url_for('admin_news_delete', id=n.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this news milestone?');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-sm btn-light border py-1 px-2" title="Delete">
+                      <i class="bi bi-trash-fill text-danger"></i>
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="6" class="text-center py-5 text-muted">No news milestones configured.</td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

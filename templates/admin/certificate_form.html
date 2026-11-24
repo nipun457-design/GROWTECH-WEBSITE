@@ -1,0 +1,72 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}{% if cert %}Edit Certificate{% else %}Add Certificate{% endif %}{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+  <a href="{{ url_for('admin_certificates') }}" class="btn btn-sm btn-outline-secondary mb-2">
+    <i class="bi bi-arrow-left me-1"></i> Back to Certificates
+  </a>
+  <h4 class="fw-bold text-navy mb-1">{% if cert %}Edit Certificate{% else %}Add Certificate or Registration{% endif %}</h4>
+  <p class="text-muted small mb-0">Record genuine government and statutory registrations only (no fictional certifications).</p>
+</div>
+
+<div class="row">
+  <div class="col-lg-8">
+    <div class="card border-0 shadow-sm p-4">
+      <form action="{% if cert %}{{ url_for('admin_certificate_edit', id=cert.id) }}{% else %}{{ url_for('admin_certificate_add') }}{% endif %}" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <div class="mb-3">
+          <label for="title" class="form-label">Certificate Title <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="title" name="title" value="{{ cert.title if cert else '' }}" placeholder="e.g. Udyam Registration Certificate" required>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label for="cert_number" class="form-label">Certificate / Registration Number <span class="text-danger">*</span></label>
+            <input type="text" class="form-control font-monospace" id="cert_number" name="cert_number" value="{{ cert.cert_number if cert else '' }}" placeholder="e.g. UDYAM-HR-05-0093212" required>
+          </div>
+
+          <div class="col-md-6">
+            <label for="issuing_authority" class="form-label">Issuing Authority <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="issuing_authority" name="issuing_authority" value="{{ cert.issuing_authority if cert else '' }}" placeholder="e.g. Ministry of MSME, Govt of India" required>
+          </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label for="issue_date" class="form-label">Date of Issue / Registration</label>
+            <input type="text" class="form-control" id="issue_date" name="issue_date" value="{{ cert.issue_date if cert else '' }}" placeholder="e.g. 31/01/2024">
+          </div>
+
+          <div class="col-md-6">
+            <label for="cert_file" class="form-label">Certificate Document / Image</label>
+            <input class="form-control" type="file" id="cert_file" name="cert_file" accept=".pdf,.png,.jpg,.jpeg,.webp">
+            <small class="text-muted">Allowed: PDF, JPG, PNG (Max 16MB)</small>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="description" class="form-label">Details / Description</label>
+          <textarea class="form-control" id="description" name="description" rows="3" placeholder="Brief explanation of registration scope and activities...">{{ cert.description if cert else '' }}</textarea>
+        </div>
+
+        <div class="form-check form-switch mb-4">
+          <input class="form-check-input" type="checkbox" id="is_published" name="is_published" value="1" {% if not cert or cert.is_published %}checked{% endif %}>
+          <label class="form-check-label fw-semibold" for="is_published">Publish and Display on Public Website</label>
+        </div>
+
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-save me-1"></i> Save Certificate
+          </button>
+          <a href="{{ url_for('admin_certificates') }}" class="btn btn-outline-secondary">
+            Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

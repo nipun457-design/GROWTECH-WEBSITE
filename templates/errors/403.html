@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}403 - Forbidden Access | GROWTECH ENGINEERS{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-light min-vh-50 d-flex align-items-center">
+  <div class="container py-5 text-center">
+    <div class="card p-5 border shadow-sm mx-auto bg-white" style="max-width: 650px;">
+      <div class="text-navy display-1 fw-bold mb-3"><i class="bi bi-shield-lock-fill text-danger"></i> 403</div>
+      <h2 class="h3 text-navy mb-3">Restricted Administrator Area</h2>
+      <p class="text-secondary mb-4">
+        Access to this resource requires authorized administrator credentials or a valid security CSRF token. Unauthorized access attempts are monitored and logged.
+      </p>
+      <div class="d-flex justify-content-center gap-3 flex-wrap">
+        <a href="{{ url_for('admin_login') }}" class="btn btn-gt-primary">
+          <i class="bi bi-box-arrow-in-right me-1"></i> Owner Admin Login
+        </a>
+        <a href="{{ url_for('home') }}" class="btn btn-gt-outline">
+          <i class="bi bi-house-door-fill me-1"></i> Return to Homepage
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

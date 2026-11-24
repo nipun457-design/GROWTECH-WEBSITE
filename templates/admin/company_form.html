@@ -1,0 +1,155 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}Company Content Management{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+  <h4 class="fw-bold text-navy mb-1">Company Profile &amp; Contact Settings</h4>
+  <p class="text-muted small mb-0">Update verified company information, coordinates, vision, mission, and workshop details displayed on the public website.</p>
+</div>
+
+<form action="{{ url_for('admin_company') }}" method="POST">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+  <div class="row g-4">
+    <!-- Section 1: Core Company Profile -->
+    <div class="col-lg-6">
+      <div class="card border-0 shadow-sm p-4 h-100">
+        <h6 class="fw-bold text-navy mb-3 border-bottom pb-2">
+          <i class="bi bi-building me-2 text-primary"></i>Company Identity &amp; Proprietorship
+        </h6>
+
+        <div class="mb-3">
+          <label for="company_name" class="form-label">Company Name</label>
+          <input type="text" class="form-control" id="company_name" name="company_name" value="{{ content.get('company_name', 'GROWTECH ENGINEERS') }}" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="slogan" class="form-label">Brand Slogan / Tagline</label>
+          <input type="text" class="form-control" id="slogan" name="slogan" value="{{ content.get('slogan', 'GTE – Let\'s Get Growing') }}" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="tagline" class="form-label">Extended Subtitle</label>
+          <input type="text" class="form-control" id="tagline" name="tagline" value="{{ content.get('tagline', 'Precision Tooling, Jigs & Fixtures, and Industrial Engineering Solutions') }}">
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label for="proprietor" class="form-label">Proprietor Name</label>
+            <input type="text" class="form-control" id="proprietor" name="proprietor" value="{{ content.get('proprietor', 'Mr. Naresh Kumar') }}" required>
+          </div>
+          <div class="col-md-6">
+            <label for="established" class="form-label">Date of Establishment</label>
+            <input type="text" class="form-control" id="established" name="established" value="{{ content.get('established', 'September 2023') }}" required>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="proprietor_experience" class="form-label">Proprietor Experience</label>
+          <input type="text" class="form-control" id="proprietor_experience" name="proprietor_experience" value="{{ content.get('proprietor_experience', '22+ Years of Engineering & Toolroom Experience') }}">
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label for="gstin" class="form-label">GSTIN</label>
+            <input type="text" class="form-control font-monospace" id="gstin" name="gstin" value="{{ content.get('gstin', '06BIYPK7127F1ZV') }}">
+          </div>
+          <div class="col-md-6">
+            <label for="udyam_number" class="form-label">Udyam Registration</label>
+            <input type="text" class="form-control font-monospace" id="udyam_number" name="udyam_number" value="{{ content.get('udyam_number', 'UDYAM-HR-05-0093212') }}">
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="nic_code" class="form-label">NIC Code Activity</label>
+          <input type="text" class="form-control" id="nic_code" name="nic_code" value="{{ content.get('nic_code', '28221 (Metal-forming machinery & machine tools)') }}">
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Contact Coordinates & Factory Facilities -->
+    <div class="col-lg-6">
+      <div class="card border-0 shadow-sm p-4 h-100">
+        <h6 class="fw-bold text-navy mb-3 border-bottom pb-2">
+          <i class="bi bi-geo-alt me-2 text-danger"></i>Contact Coordinates &amp; Workshop Details
+        </h6>
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label for="phone_primary" class="form-label">Primary Phone (Mr. Naresh Kumar)</label>
+            <input type="text" class="form-control" id="phone_primary" name="phone_primary" value="{{ content.get('phone_primary', '+91-9991535590') }}" required>
+          </div>
+          <div class="col-md-6">
+            <label for="phone_secondary" class="form-label">Secondary Phone (Support)</label>
+            <input type="text" class="form-control" id="phone_secondary" name="phone_secondary" value="{{ content.get('phone_secondary', '+91-8930294103') }}" required>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="email" class="form-label">Official Email Address</label>
+          <input type="email" class="form-control" id="email" name="email" value="{{ content.get('email', 'growtechengineers911@gmail.com') }}" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="location" class="form-label">Factory Address</label>
+          <textarea class="form-control" id="location" name="location" rows="2" required>{{ content.get('location', 'Main Market, Fazalwas, Tauru Road, Pachgaon, Manesar, Gurugram, Haryana – 122413, India') }}</textarea>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label for="facilities_area" class="form-label">Plant Dimensions / Area</label>
+            <input type="text" class="form-control" id="facilities_area" name="facilities_area" value="{{ content.get('facilities_area', 'Total Area: 3,800 Sq. Ft. | Built-up Area: 2,650 Sq. Ft.') }}">
+          </div>
+          <div class="col-md-6">
+            <label for="manpower" class="form-label">Technical Manpower</label>
+            <input type="text" class="form-control" id="manpower" name="manpower" value="{{ content.get('manpower', '8 Technical Team Members (Fabrication, Automation & Tool/Fixture Mfg.)') }}">
+          </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label for="power_backup" class="form-label">Power Backup / Generator</label>
+            <input type="text" class="form-control" id="power_backup" name="power_backup" value="{{ content.get('power_backup', '35 KVA Generator Facility Available') }}">
+          </div>
+          <div class="col-md-6">
+            <label for="working_hours" class="form-label">Working Operating Hours</label>
+            <input type="text" class="form-control" id="working_hours" name="working_hours" value="{{ content.get('working_hours', 'Monday – Saturday: 08:30 AM – 07:30 PM (Sunday Closed)') }}">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Vision, Mission & Introduction -->
+    <div class="col-12">
+      <div class="card border-0 shadow-sm p-4">
+        <h6 class="fw-bold text-navy mb-3 border-bottom pb-2">
+          <i class="bi bi-card-text me-2 text-success"></i>Vision, Mission &amp; Company Narrative
+        </h6>
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label for="vision" class="form-label">Company Vision (from official profile)</label>
+            <textarea class="form-control" id="vision" name="vision" rows="3" required>{{ content.get('vision', 'TO PROVIDE THE ENGINEERING SOLUTIONS TO MAKE EVERYONE\'S LIFE EASY & TO WIN THE CONFIDENCE OF STAKEHOLDERS.') }}</textarea>
+          </div>
+          <div class="col-md-6">
+            <label for="mission" class="form-label">Company Mission (from official profile)</label>
+            <textarea class="form-control" id="mission" name="mission" rows="3" required>{{ content.get('mission', 'TO MAKE OUR ORGANIZATION BEST IN THE MARKET TO PROVIDE INDUSTRIAL SOLUTIONS WITH EFFECTIVE COST.') }}</textarea>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="intro_text" class="form-label">Homepage &amp; Company Introduction Text</label>
+          <textarea class="form-control" id="intro_text" name="intro_text" rows="4" required>{{ content.get('intro_text', 'Established in September 2023 by Mr. Naresh Kumar (bringing over 22 years of hands-on tooling experience), GROWTECH ENGINEERS (GTE) has positioned itself as a dependable tooling, machining, and engineering partner for component manufacturers in the Gurgaon–Manesar industrial belt.') }}</textarea>
+        </div>
+
+        <div class="text-end">
+          <button type="submit" class="btn btn-primary btn-lg">
+            <i class="bi bi-save me-1"></i> Update Company Information
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+{% endblock %}

@@ -1,0 +1,39 @@
+# ==============================================================================
+# Render Blueprint Specification for GROWTECH ENGINEERS Corporate Web Platform
+# https://render.com/docs/blueprint-spec
+# ==============================================================================
+
+services:
+  - type: web
+    name: growtech-engineers-web
+    runtime: python
+    buildCommand: "pip install -r requirements.txt && python migrate_phase2.py"
+    startCommand: "gunicorn app:app --workers 2 --threads 4 --timeout 120"
+    plan: free
+    region: singapore
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_DEBUG
+        value: "false"
+      - key: SESSION_COOKIE_SECURE
+        value: "true"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: growtech-db
+          property: connectionString
+      - key: UPLOAD_FOLDER
+        value: /var/data/uploads
+    disk:
+      name: growtech-uploads
+      mountPath: /var/data/uploads
+      sizeGB: 1
+
+databases:
+  - name: growtech-db
+    databaseName: growtech
+    user: growtech_user
+    plan: free
+    region: singapore

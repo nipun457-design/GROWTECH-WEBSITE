@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}404 - Page Not Found | GROWTECH ENGINEERS{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-light min-vh-50 d-flex align-items-center">
+  <div class="container py-5 text-center">
+    <div class="card p-5 border shadow-sm mx-auto bg-white" style="max-width: 650px;">
+      <div class="text-navy display-1 fw-bold mb-3">404</div>
+      <h2 class="h3 text-navy mb-3">Page or Technical Asset Not Found</h2>
+      <p class="text-secondary mb-4">
+        The requested page or document could not be located on our server. The URL may have moved or was entered incorrectly.
+      </p>
+      <div class="d-flex justify-content-center gap-3 flex-wrap">
+        <a href="{{ url_for('home') }}" class="btn btn-gt-primary">
+          <i class="bi bi-house-door-fill me-1"></i> Return to Homepage
+        </a>
+        <a href="{{ url_for('products') }}" class="btn btn-gt-outline">
+          <i class="bi bi-gear-wide-connected me-1"></i> Browse Products
+        </a>
+        <a href="{{ url_for('contact') }}" class="btn btn-gt-success">
+          <i class="bi bi-envelope-fill me-1"></i> Contact Engineering Team
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

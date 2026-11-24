@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" width="100%" height="100%">
+  <defs>
+    <pattern id="gridPat" width="30" height="30" patternUnits="userSpaceOnUse">
+      <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+    </pattern>
+  </defs>
+  
+  <rect width="800" height="520" fill="#f8fafc"/>
+  <rect width="800" height="520" fill="url(#gridPat)"/>
+  <rect x="20" y="20" width="760" height="480" fill="none" stroke="#315579" stroke-width="2" stroke-dasharray="8,6" opacity="0.4"/>
+  
+  <g transform="translate(400, 220)" text-anchor="middle">
+    <circle cx="0" cy="0" r="45" fill="#f1f5f9" stroke="#315579" stroke-width="2"/>
+    <!-- Camera / Image Icon -->
+    <path d="M -20 -10 L -12 -10 L -8 -18 L 8 -18 L 12 -10 L 20 -10 C 23 -10 25 -8 25 -5 L 25 15 C 25 18 23 20 20 20 L -20 20 C -23 20 -25 18 -25 15 L -25 -5 C -25 -8 -23 -10 -20 -10 Z" fill="#315579"/>
+    <circle cx="0" cy="5" r="8" fill="#ffffff" stroke="#7ca836" stroke-width="2"/>
+    <circle cx="15" cy="-3" r="2.5" fill="#7ca836"/>
+    
+    <text x="0" y="70" font-family="'Segoe UI', Roboto, sans-serif" font-size="18" font-weight="700" fill="#315579">OWNER MILESTONE / EVENT PLACEHOLDER</text>
+    <text x="0" y="95" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="500" fill="#64748b">Reserved for Upcoming Plant Milestone, Dispatch Event or Exhibition</text>
+    <text x="0" y="125" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="600" fill="#7ca836">GROWTECH ENGINEERS • PACHGAON, MANESAR</text>
+  </g>
+</svg>

@@ -1,0 +1,126 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}Enquiries & RFQ Management{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+  <div>
+    <h4 class="fw-bold mb-1 text-navy">Customer RFQs &amp; Enquiries</h4>
+    <p class="text-muted small mb-0">View submissions from the public website, manage client follow-up status, and track technical RFQs</p>
+  </div>
+  
+  <!-- Status Filter Pills -->
+  <div class="d-flex gap-1">
+    <a href="{{ url_for('admin_enquiries') }}" class="btn btn-sm {% if not current_status %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+      All ({{ total_count }})
+    </a>
+    <a href="{{ url_for('admin_enquiries', status='New') }}" class="btn btn-sm {% if current_status == 'New' %}btn-warning text-dark fw-bold{% else %}btn-outline-warning text-dark{% endif %}">
+      New ({{ new_count }})
+    </a>
+    <a href="{{ url_for('admin_enquiries', status='Contacted') }}" class="btn btn-sm {% if current_status == 'Contacted' %}btn-info text-dark fw-bold{% else %}btn-outline-info text-dark{% endif %}">
+      Contacted
+    </a>
+    <a href="{{ url_for('admin_enquiries', status='Completed') }}" class="btn btn-sm {% if current_status == 'Completed' %}btn-success text-white fw-bold{% else %}btn-outline-success{% endif %}">
+      Completed
+    </a>
+  </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-hover table-admin mb-0">
+      <thead>
+        <tr>
+          <th>Client Name &amp; Company</th>
+          <th>Contact Information</th>
+          <th>Subject / Requirement</th>
+          <th>Date Received</th>
+          <th>Status</th>
+          <th class="text-end" style="min-width: 140px;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if enquiries %}
+          {% for enq in enquiries %}
+            <tr>
+              <td>
+                <div class="fw-bold text-navy">{{ enq.name }}</div>
+                <small class="text-muted">{{ enq.company_name or 'Individual / Direct' }}</small>
+              </td>
+              <td>
+                <div><a href="tel:{{ enq.phone }}" class="text-dark fw-semibold text-decoration-none"><i class="bi bi-telephone-fill text-success me-1"></i>{{ enq.phone }}</a></div>
+                <small><a href="mailto:{{ enq.email }}" class="text-muted text-decoration-none"><i class="bi bi-envelope-fill me-1"></i>{{ enq.email }}</a></small>
+              </td>
+              <td>
+                <div class="fw-semibold text-truncate" style="max-width: 250px;">{{ enq.subject or enq.service_category or 'General RFQ' }}</div>
+                <small class="text-muted text-truncate d-block" style="max-width: 250px;">{{ enq.message }}</small>
+              </td>
+              <td><small class="text-secondary font-monospace">{{ enq.created_at[:16] }}</small></td>
+              <td>
+                {% if enq.status == 'New' %}
+                  <span class="badge-status-new"><i class="bi bi-bell-fill me-1"></i>New</span>
+                {% elif enq.status == 'Contacted' %}
+                  <span class="badge-status-contacted"><i class="bi bi-telephone-outbound me-1"></i>Contacted</span>
+                {% else %}
+                  <span class="badge-status-completed"><i class="bi bi-check-circle-fill me-1"></i>Completed</span>
+                {% endif %}
+              </td>
+              <td class="text-end">
+                <div class="d-inline-flex gap-1">
+                  <!-- Quick Status Dropdown -->
+                  <div class="dropdown">
+                    <button class="btn btn-sm btn-light border dropdown-toggle py-1 px-2" type="button" data-bs-toggle="dropdown" title="Change Status">
+                      <i class="bi bi-tag"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm small">
+                      <li><h6 class="dropdown-header">Mark Status:</h6></li>
+                      <li>
+                        <form action="{{ url_for('admin_enquiry_status', id=enq.id) }}" method="POST">
+                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                          <input type="hidden" name="status" value="New">
+                          <button type="submit" class="dropdown-item {% if enq.status == 'New' %}active{% endif %}">New</button>
+                        </form>
+                      </li>
+                      <li>
+                        <form action="{{ url_for('admin_enquiry_status', id=enq.id) }}" method="POST">
+                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                          <input type="hidden" name="status" value="Contacted">
+                          <button type="submit" class="dropdown-item {% if enq.status == 'Contacted' %}active{% endif %}">Contacted</button>
+                        </form>
+                      </li>
+                      <li>
+                        <form action="{{ url_for('admin_enquiry_status', id=enq.id) }}" method="POST">
+                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                          <input type="hidden" name="status" value="Completed">
+                          <button type="submit" class="dropdown-item {% if enq.status == 'Completed' %}active{% endif %}">Completed</button>
+                        </form>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <!-- View Detail -->
+                  <a href="{{ url_for('admin_enquiry_detail', id=enq.id) }}" class="btn btn-sm btn-light border py-1 px-2" title="View Full Message">
+                    <i class="bi bi-eye-fill text-primary"></i>
+                  </a>
+
+                  <!-- Delete -->
+                  <form action="{{ url_for('admin_enquiry_delete', id=enq.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this enquiry record?');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-sm btn-light border py-1 px-2" title="Delete">
+                      <i class="bi bi-trash-fill text-danger"></i>
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="6" class="text-center py-5 text-muted">No enquiry records found.</td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

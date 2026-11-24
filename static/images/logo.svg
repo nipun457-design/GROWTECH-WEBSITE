@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 80" width="100%" height="100%">
+  <defs>
+    <linearGradient id="gearBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b3866" />
+      <stop offset="100%" stop-color="#125291" />
+    </linearGradient>
+    <linearGradient id="gearGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#198754" />
+      <stop offset="100%" stop-color="#28a745" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Industrial Emblem / Precision Gear Icon -->
+  <g transform="translate(10, 8)">
+    <!-- Base shield / precision block -->
+    <rect x="2" y="2" width="60" height="60" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" />
+    
+    <!-- Outer Gear teeth -->
+    <path d="M32 6 L36 6 L37 11 L41 12.5 L45 9 L48 12 L45.5 16 L47 20 L52 21 L52 25 L47 26 L45.5 30 L48 34 L45 37 L41 33.5 L37 35 L36 40 L32 40 L31 35 L27 33.5 L23 37 L20 34 L22.5 30 L21 26 L16 25 L16 21 L21 20 L22.5 16 L20 12 L23 9 L27 12.5 L31 11 Z" fill="url(#gearBlue)" />
+    
+    <!-- Inner precision ring -->
+    <circle cx="34" cy="23" r="10" fill="#ffffff" stroke="#198754" stroke-width="2.5" />
+    
+    <!-- Precision Crosshair / Center hub -->
+    <circle cx="34" cy="23" r="4.5" fill="#198754" />
+    <line x1="34" y1="10" x2="34" y2="36" stroke="#0b3866" stroke-width="1" stroke-dasharray="2,2" opacity="0.6" />
+    <line x1="21" y1="23" x2="47" y2="23" stroke="#0b3866" stroke-width="1" stroke-dasharray="2,2" opacity="0.6" />
+    
+    <!-- Growth chevron in green -->
+    <polyline points="22,50 32,42 42,50" fill="none" stroke="#198754" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    <polyline points="26,56 32,50 38,56" fill="none" stroke="#0b3866" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+  
+  <!-- Brand Text -->
+  <g transform="translate(82, 16)">
+    <text x="0" y="25" font-family="'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="25" font-weight="800" letter-spacing="1" fill="#0b3866">GROWTECH</text>
+    <text x="144" y="25" font-family="'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="25" font-weight="700" letter-spacing="1" fill="#198754">ENGINEERS</text>
+    <line x1="0" y1="33" x2="310" y2="33" stroke="#0b3866" stroke-width="2" />
+    <line x1="0" y1="36" x2="160" y2="36" stroke="#198754" stroke-width="1.5" />
+    <text x="0" y="49" font-family="'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="600" letter-spacing="1.2" fill="#556980">TOOLING • JIGS &amp; FIXTURES • PRECISION DIES • MANESAR</text>
+  </g>
+</svg>

@@ -1,0 +1,85 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}{% if item %}Edit Gallery Item{% else %}Upload New Gallery Media{% endif %}{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+  <a href="{{ url_for('admin_gallery') }}" class="btn btn-sm btn-outline-secondary mb-2">
+    <i class="bi bi-arrow-left me-1"></i> Back to Gallery
+  </a>
+  <h4 class="fw-bold text-navy mb-1">{% if item %}Edit Gallery Media{% else %}Upload Gallery Media{% endif %}</h4>
+  <p class="text-muted small mb-0">Upload factory photos, machinery pictures, or factory videos</p>
+</div>
+
+<div class="row">
+  <div class="col-lg-8">
+    <div class="card border-0 shadow-sm p-4">
+      <form action="{% if item %}{{ url_for('admin_gallery_edit', id=item.id) }}{% else %}{{ url_for('admin_gallery_add') }}{% endif %}" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <div class="mb-3">
+          <label for="title" class="form-label">Media Title <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="title" name="title" value="{{ item.title if item else '' }}" placeholder="e.g. VMC VL1200 Machining Setup" required>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label for="category" class="form-label">Category <span class="text-danger">*</span></label>
+            <select class="form-select" id="category" name="category" required>
+              <option value="Factory" {% if item and item.category == 'Factory' %}selected{% endif %}>Factory Infrastructure</option>
+              <option value="Machinery" {% if item and item.category == 'Machinery' %}selected{% endif %}>Machinery &amp; Toolroom</option>
+              <option value="Product" {% if item and item.category == 'Product' %}selected{% endif %}>Finished Products</option>
+              <option value="Project" {% if item and item.category == 'Project' %}selected{% endif %}>Project Deliverables</option>
+              <option value="Video" {% if item and item.category == 'Video' %}selected{% endif %}>Factory / Machine Video</option>
+            </select>
+          </div>
+
+          <div class="col-md-6">
+            <label for="file_type" class="form-label">Media Type</label>
+            <select class="form-select" id="file_type" name="file_type">
+              <option value="image" {% if not item or item.file_type == 'image' %}selected{% endif %}>Photograph / Image</option>
+              <option value="video" {% if item and item.file_type == 'video' %}selected{% endif %}>Video File</option>
+            </select>
+          </div>
+        </div>
+
+        {% if item and item.file_path %}
+          <div class="mb-3 p-3 bg-light rounded border text-center">
+            {% if item.file_type == 'video' %}
+              <div class="p-3 text-muted"><i class="bi bi-file-earmark-play fs-1 text-danger"></i><br>Video File: {{ item.file_path }}</div>
+            {% else %}
+              <img src="{{ url_for('static', filename='images/' + item.file_path) if not item.file_path.startswith('uploads/') else url_for('static', filename=item.file_path) }}" alt="{{ item.title }}" style="max-height: 200px; max-width: 100%;" class="rounded">
+            {% endif %}
+            <small class="text-muted d-block mt-1">Current file: {{ item.file_path }}</small>
+          </div>
+        {% endif %}
+
+        <div class="mb-3">
+          <label for="media_file" class="form-label">{% if item %}Replace File (Optional){% else %}Choose File to Upload <span class="text-danger">*</span>{% endif %}</label>
+          <input class="form-control" type="file" id="media_file" name="media_file" accept=".png,.jpg,.jpeg,.webp,.mp4,.webm" {% if not item %}required{% endif %}>
+          <small class="text-muted">Allowed: JPG, PNG, WEBP, MP4 (Max 16MB)</small>
+        </div>
+
+        <div class="mb-3">
+          <label for="caption" class="form-label">Caption / Description</label>
+          <textarea class="form-control" id="caption" name="caption" rows="3" placeholder="Brief technical caption describing the machine or shop floor area...">{{ item.caption if item else '' }}</textarea>
+        </div>
+
+        <div class="form-check form-switch mb-4">
+          <input class="form-check-input" type="checkbox" id="is_published" name="is_published" value="1" {% if not item or item.is_published %}checked{% endif %}>
+          <label class="form-check-label fw-semibold" for="is_published">Publish in Public Gallery</label>
+        </div>
+
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-save me-1"></i> Save Media
+          </button>
+          <a href="{{ url_for('admin_gallery') }}" class="btn btn-outline-secondary">
+            Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

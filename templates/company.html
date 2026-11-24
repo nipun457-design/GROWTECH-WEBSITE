@@ -1,0 +1,443 @@
+{% extends "base.html" %}
+
+{% block title %}Company Profile & Infrastructure | GROWTECH ENGINEERS, Manesar{% endblock %}
+
+{% block content %}
+<!-- Subpage Header Banner -->
+<section class="subpage-banner">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8">
+        <h1>Company Profile &amp; Infrastructure</h1>
+        <p>Precision machine component manufacturing, custom tooling, and engineering solutions based in Manesar, Gurugram.</p>
+        <div class="subpage-breadcrumbs">
+          <a href="{{ url_for('home') }}">Home</a> &gt; <span>Company Profile</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Company Overview & Background -->
+<section class="py-5 bg-white">
+  <div class="container py-2">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <div class="section-badge">Company Background</div>
+        <h2 class="section-title">About GROWTECH ENGINEERS</h2>
+        <div class="section-divider"></div>
+        <p class="text-secondary">
+          <strong>GROWTECH ENGINEERS (GTE)</strong> was established in <strong>September 2023</strong> by <strong>Mr. Naresh Kumar</strong> at Pachgaon, Manesar (Gurugram, Haryana) — situated directly in Northern India's premier industrial and automotive manufacturing hub along the NH-48 and KMP Expressway corridor.
+        </p>
+        <p class="text-secondary">
+          Backed by <strong>over 22 years of hands-on engineering and toolroom experience</strong>, our technical team specializes in the design, machining, fabrication, and verification of high-precision jigs, fixtures, receiving gauges, tandem press tools, and progressive hydraulic dies.
+        </p>
+        <p class="text-secondary">
+          With in-house VMC machining, conventional toolroom capacity, dedicated assembly beds, and calibrated inspection equipment, we partner with automotive Tier-1/Tier-2 suppliers and industrial manufacturers to achieve zero-defect repeatability and cycle time reduction.
+        </p>
+
+        <div class="d-flex flex-wrap gap-2 mt-4">
+          <span class="badge bg-light text-navy border px-3 py-2"><i class="bi bi-geo-alt text-success me-1"></i> Pachgaon, Manesar</span>
+          <span class="badge bg-light text-navy border px-3 py-2"><i class="bi bi-calendar-check text-success me-1"></i> Established: September 2023</span>
+          <span class="badge bg-light text-navy border px-3 py-2"><i class="bi bi-person-badge text-success me-1"></i> Mr. Naresh Kumar, Proprietor</span>
+          <span class="badge bg-light text-navy border px-3 py-2"><i class="bi bi-patch-check text-success me-1"></i> Udyam: {{ company.udyam_number }}</span>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="card border p-4 bg-light shadow-sm">
+          <h4 class="text-navy mb-3"><i class="bi bi-info-circle text-success me-2"></i>Official Profile Summary</h4>
+          <table class="table table-bordered bg-white mb-0">
+            <tbody>
+              <tr>
+                <th class="bg-light text-navy" style="width: 38%;">Company Name</th>
+                <td><strong>{{ company.name }}</strong></td>
+              </tr>
+              <tr>
+                <th class="bg-light text-navy">Legal Status</th>
+                <td>Proprietorship Firm</td>
+              </tr>
+              <tr>
+                <th class="bg-light text-navy">Proprietor</th>
+                <td><strong>{{ company.proprietor }}</strong> ({{ company.proprietor_experience }})</td>
+              </tr>
+              <tr>
+                <th class="bg-light text-navy">Date of Establishment</th>
+                <td>{{ company.established }} (as stated in Company Profile)</td>
+              </tr>
+              <tr>
+                <th class="bg-light text-navy">Nature of Business</th>
+                <td>{{ company.business }}</td>
+              </tr>
+              <tr>
+                <th class="bg-light text-navy">Government Registration</th>
+                <td>Udyam: <strong>{{ company.udyam_number }}</strong> ({{ company.udyam_type }})</td>
+              </tr>
+              <tr>
+                <th class="bg-light text-navy">GSTIN</th>
+                <td>{{ company.gstin }}</td>
+              </tr>
+              <tr>
+                <th class="bg-light text-navy">Factory Location</th>
+                <td>{{ company.location }}</td>
+              </tr>
+              <tr>
+                <th class="bg-light text-navy">Contact Phone</th>
+                <td><a href="tel:{{ company.phone_primary_raw }}">{{ company.phone_primary }}</a> (Mr. Naresh Kumar)</td>
+              </tr>
+              <tr>
+                <th class="bg-light text-navy">Official Email</th>
+                <td><a href="mailto:{{ company.email }}">{{ company.email }}</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Vision & Mission (Exact from Company Profile) -->
+<section class="py-5 bg-light border-top border-bottom">
+  <div class="container py-2">
+    <div class="text-center mb-5">
+      <div class="section-badge">Corporate Foundation</div>
+      <h2 class="section-title">Vision &amp; Mission</h2>
+      <p class="section-subtitle mx-auto">
+        Defined in the official company profile of Growtech Engineers.
+      </p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="card h-100 border p-4 bg-white shadow-sm" style="border-top: 4px solid var(--gt-navy) !important;">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="contact-icon-box" style="background-color: var(--gt-navy);">
+              <i class="bi bi-eye-fill"></i>
+            </div>
+            <h3 class="h4 mb-0 text-navy">Our Vision</h3>
+          </div>
+          <blockquote class="blockquote mb-0 fs-6 text-secondary">
+            "{{ company.vision }}"
+          </blockquote>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card h-100 border p-4 bg-white shadow-sm" style="border-top: 4px solid var(--gt-green) !important;">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="contact-icon-box" style="background-color: var(--gt-green);">
+              <i class="bi bi-bullseye"></i>
+            </div>
+            <h3 class="h4 mb-0 text-navy">Our Mission</h3>
+          </div>
+          <blockquote class="blockquote mb-0 fs-6 text-secondary">
+            "{{ company.mission }}"
+          </blockquote>
+        </div>
+      </div>
+    </div>
+
+    <!-- Specializations Strip from Company Profile -->
+    <div class="mt-5">
+      <h5 class="text-navy text-center mb-3">Core Engineering Specializations</h5>
+      <div class="row g-3 justify-content-center">
+        <div class="col-6 col-md-3">
+          <div class="card p-3 border bg-white text-center h-100">
+            <i class="bi bi-gear-fill text-success fs-3 mb-2"></i>
+            <h6 class="text-navy mb-1">Special Purpose Machines</h6>
+            <small class="text-muted">SPM design, fabrication &amp; commissioning</small>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="card p-3 border bg-white text-center h-100">
+            <i class="bi bi-tools text-navy fs-3 mb-2"></i>
+            <h6 class="text-navy mb-1">Jigs &amp; Special Fixtures</h6>
+            <small class="text-muted">Welding, machining &amp; assembly clamping</small>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="card p-3 border bg-white text-center h-100">
+            <i class="bi bi-speedometer2 text-success fs-3 mb-2"></i>
+            <h6 class="text-navy mb-1">Mechanical Receiver Gauges</h6>
+            <small class="text-muted">Dimensional &amp; contour verification stations</small>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="card p-3 border bg-white text-center h-100">
+            <i class="bi bi-cpu text-navy fs-3 mb-2"></i>
+            <h6 class="text-navy mb-1">Low-Cost Automation</h6>
+            <small class="text-muted">Process automation &amp; cycle optimization</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Factory Infrastructure & Workshop Setup with Real Photographs -->
+<section id="infrastructure" class="py-5 bg-white">
+  <div class="container py-2">
+    <div class="row align-items-center g-5 mb-5">
+      <div class="col-lg-6">
+        <div class="section-badge">Manesar Facility</div>
+        <h2 class="section-title">Factory Infrastructure &amp; Layout</h2>
+        <div class="section-divider"></div>
+        <p class="text-secondary">
+          Growtech Engineers operates a dedicated, structured manufacturing plant in Pachgaon, Manesar. Built to facilitate efficient material flow, tool machining, welding, fitting, and metrology inspection.
+        </p>
+        <div class="card border p-3 bg-light mb-3">
+          <div class="mb-2">
+            <span class="badge bg-secondary text-white mb-2"><i class="bi bi-building me-1"></i> Factory Specifications</span>
+            <div class="fw-semibold text-navy">{{ company.facilities_area }}</div>
+          </div>
+          <div class="row g-2 text-center pt-2 border-top">
+            <div class="col-6 border-end">
+              <div class="small text-muted"><i class="bi bi-people-fill text-success me-1"></i> Technical Team</div>
+              <div class="fw-bold text-navy small">{{ company.manpower }}</div>
+            </div>
+            <div class="col-6">
+              <div class="small text-muted"><i class="bi bi-lightning-charge-fill text-success me-1"></i> Power Backup</div>
+              <div class="fw-bold text-navy small">{{ company.power_backup }}</div>
+            </div>
+          </div>
+        </div>
+        <ul class="list-unstyled text-secondary">
+          <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i><strong>Main Entrance &amp; Dispatch Bay:</strong> Direct vehicular access on Tauru Road, Pachgaon.</li>
+          <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i><strong>Toolroom Machining Bay:</strong> In-house VMC, vertical milling with DRO, lathes, and surface grinding.</li>
+          <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i><strong>Assembly &amp; Try-out Area:</strong> Fitting tables, die trial beds, and welding stations.</li>
+          <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i><strong>Inspection Room:</strong> Grade-0 granite surface plate and digital height gauge.</li>
+        </ul>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="row g-3">
+          <div class="col-6">
+            <img src="{{ url_for('static', filename='images/factory/main_entrance.jpg') }}" alt="Main Entrance Growtech Engineers" class="img-fluid rounded border shadow-sm" style="height: 190px; width: 100%; object-fit: cover;">
+            <small class="text-muted d-block text-center mt-1">Main Entrance &amp; Signboard</small>
+          </div>
+          <div class="col-6">
+            <img src="{{ url_for('static', filename='images/factory/inner_infrastructure.jpg') }}" alt="Inner Shopfloor Infrastructure" class="img-fluid rounded border shadow-sm" style="height: 190px; width: 100%; object-fit: cover;">
+            <small class="text-muted d-block text-center mt-1">Inner Shop Floor &amp; Workstations</small>
+          </div>
+          <div class="col-6">
+            <img src="{{ url_for('static', filename='images/factory/office_room.jpg') }}" alt="Office & CAD Planning" class="img-fluid rounded border shadow-sm" style="height: 190px; width: 100%; object-fit: cover;">
+            <small class="text-muted d-block text-center mt-1">Engineering &amp; Office Setup</small>
+          </div>
+          <div class="col-6">
+            <img src="{{ url_for('static', filename='images/factory/inspection_room.jpg') }}" alt="Inspection Room" class="img-fluid rounded border shadow-sm" style="height: 190px; width: 100%; object-fit: cover;">
+            <small class="text-muted d-block text-center mt-1">Inspection &amp; Metrology Area</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Machinery Setup Grid (All Actual Machines from Company Profile) -->
+    <div class="mt-5">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h3 class="text-navy mb-1">Our Machinery &amp; Equipment Setup</h3>
+          <p class="text-muted small mb-0">Complete inventory of machines installed and operational at our Pachgaon, Manesar plant.</p>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-4">
+          <div class="machinery-card">
+            <img src="{{ url_for('static', filename='images/factory/vmc_machine.jpg') }}" alt="VMC Machine 1200*650mm STM VL1200" class="machinery-img">
+            <div class="machinery-body">
+              <h5 class="text-navy mb-1">VMC Machine (1200*650mm)</h5>
+              <p class="small text-muted mb-0">STM VL1200 vertical machining center for precision contouring, 3D die pockets, and complex fixture plates.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+          <div class="machinery-card">
+            <img src="{{ url_for('static', filename='images/factory/milling_machines.jpg') }}" alt="MNTR with DRO Milling Setup" class="machinery-img">
+            <div class="machinery-body">
+              <h5 class="text-navy mb-1">MNTR with DRO (2 Units)</h5>
+              <p class="small text-muted mb-0">Hercules vertical turret milling machines equipped with digital readout systems for squaring and machining.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+          <div class="machinery-card">
+            <img src="{{ url_for('static', filename='images/factory/lathe_machines.jpg') }}" alt="Lathe Machines in Operation" class="machinery-img">
+            <div class="machinery-body">
+              <h5 class="text-navy mb-1">Centre Lathes (4.5' &amp; 6')</h5>
+              <p class="small text-muted mb-0">Precision lathe turning stations for guide pillars, bushings, locating pins, and round tooling blanks.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+          <div class="machinery-card">
+            <img src="{{ url_for('static', filename='images/factory/surface_grinder.jpg') }}" alt="Surface Grinder" class="machinery-img">
+            <div class="machinery-body">
+              <h5 class="text-navy mb-1">Surface Grinders (2 Units)</h5>
+              <p class="small text-muted mb-0">Sai Prime precision surface grinders for grinding flat, parallel, and square die faces and datum blocks.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+          <div class="machinery-card">
+            <img src="{{ url_for('static', filename='images/factory/welding_machine.jpg') }}" alt="Welding Stations" class="machinery-img">
+            <div class="machinery-body">
+              <h5 class="text-navy mb-1">Welding Equipment (Arc &amp; Portable)</h5>
+              <p class="small text-muted mb-0">Arc welding machines and portable welding units for heavy trolley frames, racks, and structural bases.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+          <div class="machinery-card">
+            <img src="{{ url_for('static', filename='images/factory/bandsaw_machine.jpg') }}" alt="Band Saw Machine" class="machinery-img">
+            <div class="machinery-body">
+              <h5 class="text-navy mb-1">Band Saw &amp; Drilling Machines</h5>
+              <p class="small text-muted mb-0">Heavy-duty industrial band saw machine, chop saw, and drilling machines for raw material sizing and hole drilling.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Equipment Inventory Table from Slide 9 -->
+      <div class="card border p-4 bg-light mt-4 shadow-sm">
+        <h5 class="text-navy mb-3"><i class="bi bi-list-check text-success me-2"></i>Complete Plant Facilities Inventory (As per Company Profile)</h5>
+        <div class="row g-2">
+          <div class="col-md-3 col-6 small"><i class="bi bi-check2 text-success me-1"></i>VMC Machine 1200*650mm</div>
+          <div class="col-md-3 col-6 small"><i class="bi bi-check2 text-success me-1"></i>MNTR with DRO - 2 Units</div>
+          <div class="col-md-3 col-6 small"><i class="bi bi-check2 text-success me-1"></i>Surface Grinders - 2 Units</div>
+          <div class="col-md-3 col-6 small"><i class="bi bi-check2 text-success me-1"></i>Lathe Machine - 4.5'</div>
+          <div class="col-md-3 col-6 small"><i class="bi bi-check2 text-success me-1"></i>Lathe Machine - 6'</div>
+          <div class="col-md-3 col-6 small"><i class="bi bi-check2 text-success me-1"></i>Digital Height Gauge</div>
+          <div class="col-md-3 col-6 small"><i class="bi bi-check2 text-success me-1"></i>Digital Vernier Caliper</div>
+          <div class="col-md-3 col-6 small"><i class="bi bi-check2 text-success me-1"></i>Digital Micrometer</div>
+          <div class="col-md-3 col-6 small"><i class="bi bi-check2 text-success me-1"></i>Granite Surface Plate (Luthra)</div>
+          <div class="col-md-3 col-6 small"><i class="bi bi-check2 text-success me-1"></i>Arc Welding Machine</div>
+          <div class="col-md-3 col-6 small"><i class="bi bi-check2 text-success me-1"></i>Portable Welding Machine</div>
+          <div class="col-md-3 col-6 small"><i class="bi bi-check2 text-success me-1"></i>Drilling Machine</div>
+          <div class="col-md-3 col-6 small"><i class="bi bi-check2 text-success me-1"></i>Chop Saw Machine</div>
+          <div class="col-md-3 col-6 small"><i class="bi bi-check2 text-success me-1"></i>Band Saw Machine</div>
+          <div class="col-md-3 col-6 small"><i class="bi bi-check2 text-success me-1"></i>Air Compressor System</div>
+          <div class="col-md-3 col-6 small"><i class="bi bi-check2 text-success me-1"></i>Generator Backup (35 KVA)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Manufacturing Team Structure (From Slide 9) -->
+<section class="py-5 bg-light border-top border-bottom">
+  <div class="container py-2">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-5">
+        <div class="section-badge">Workforce Structure</div>
+        <h2 class="section-title">The Manufacturing Team</h2>
+        <div class="section-divider"></div>
+        <p class="text-secondary">
+          Growtech Engineers operates with a dedicated team of <strong>8 technical team members</strong> under the direct leadership of Proprietor <strong>Mr. Naresh Kumar</strong>.
+        </p>
+        <p class="text-secondary">
+          Our technical manpower is structured into three specialized shop floor divisions to handle fabrication, low-cost automation, and tool/fixture manufacturing simultaneously.
+        </p>
+        <div class="mt-4">
+          <a href="{{ url_for('contact') }}" class="btn btn-gt-primary">
+            <i class="bi bi-chat-dots-fill"></i> Connect with Our Technical Team
+          </a>
+        </div>
+      </div>
+
+      <div class="col-lg-7">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="card p-3 border bg-white h-100 shadow-sm">
+              <div class="d-flex align-items-center gap-3 mb-2">
+                <div class="contact-icon-box" style="background-color: var(--gt-navy);">
+                  <i class="bi bi-person-fill-gear"></i>
+                </div>
+                <div>
+                  <h6 class="mb-0 text-navy">Proprietor &amp; Technical Head</h6>
+                  <small class="text-success fw-bold">Mr. Naresh Kumar</small>
+                </div>
+              </div>
+              <p class="small text-muted mb-0">22+ years of engineering experience supervising design feasibility, machine shop operations, and quality deliveries.</p>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="card p-3 border bg-white h-100 shadow-sm">
+              <div class="d-flex align-items-center gap-3 mb-2">
+                <div class="contact-icon-box" style="background-color: var(--gt-green);">
+                  <i class="bi bi-tools"></i>
+                </div>
+                <div>
+                  <h6 class="mb-0 text-navy">Tool &amp; Fixture Mfg. Team</h6>
+                  <small class="text-muted">Toolmakers &amp; Die Fitters</small>
+                </div>
+              </div>
+              <p class="small text-muted mb-0">Specialists in die spotting, precision punch clearances, guide pillar alignment, and fixture assembly.</p>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="card p-3 border bg-white h-100 shadow-sm">
+              <div class="d-flex align-items-center gap-3 mb-2">
+                <div class="contact-icon-box" style="background-color: var(--gt-navy);">
+                  <i class="bi bi-cpu"></i>
+                </div>
+                <div>
+                  <h6 class="mb-0 text-navy">Automation Team</h6>
+                  <small class="text-muted">Process &amp; Fixture Automation</small>
+                </div>
+              </div>
+              <p class="small text-muted mb-0">Engineers handling automated checking fixtures, sensor integrations, and Poka-Yoke mistake-proofing mechanisms.</p>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="card p-3 border bg-white h-100 shadow-sm">
+              <div class="d-flex align-items-center gap-3 mb-2">
+                <div class="contact-icon-box" style="background-color: var(--gt-green);">
+                  <i class="bi bi-hammer"></i>
+                </div>
+                <div>
+                  <h6 class="mb-0 text-navy">Fabrication Team</h6>
+                  <small class="text-muted">Welders &amp; Steel Fabricators</small>
+                </div>
+              </div>
+              <p class="small text-muted mb-0">Fabricating heavy trolley frames, FIFO material racks, hydraulic press bolsters, and machine frames.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Genuine Customer Logos Section (From Slide 16) -->
+<section class="py-5 bg-white">
+  <div class="container py-2">
+    <div class="text-center mb-5">
+      <div class="section-badge">Client Trust</div>
+      <h2 class="section-title">Valuable Customers We Support</h2>
+      <p class="section-subtitle mx-auto">
+        Genuine manufacturing clients and component makers from our official company profile.
+      </p>
+    </div>
+
+    <div class="row g-3 justify-content-center">
+      {% for customer in company.customers %}
+        <div class="col-6 col-md-4 col-lg-3">
+          <div class="customer-card">
+            <img src="{{ url_for('static', filename='images/' + customer.image) }}" alt="{{ customer.name }}" class="customer-logo-img">
+            <small class="text-muted fw-semibold">{{ customer.name }}</small>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

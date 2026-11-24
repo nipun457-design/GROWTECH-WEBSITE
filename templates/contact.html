@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Us & Technical Enquiries | GROWTECH ENGINEERS, Manesar{% endblock %}
+
+{% block content %}
+<!-- Subpage Header Banner -->
+<section class="subpage-banner">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8">
+        <h1>Contact Us &amp; Technical Enquiries</h1>
+        <p>Get in touch for custom tooling quotations, drawing reviews, and manufacturing consultations in Manesar, Gurugram.</p>
+        <div class="subpage-breadcrumbs">
+          <a href="{{ url_for('home') }}">Home</a> &gt; <span>Contact Us</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact Coordinates & Enquiry Form Section -->
+<section class="py-5 bg-white">
+  <div class="container py-2">
+    <div class="row g-5">
+      <!-- Left Column: Coordinates & Direct Channels -->
+      <div class="col-lg-5">
+        <div class="section-badge">Company Contact Details</div>
+        <h2 class="section-title">GROWTECH ENGINEERS</h2>
+        <div class="section-divider"></div>
+        <p class="text-secondary mb-4">
+          Our engineering facility is situated at Pachgaon, Manesar, conveniently accessible from the NH-48 (Delhi-Jaipur Highway) and the Kundli-Manesar-Palwal (KMP) Expressway. We invite technical visits and drawing reviews.
+        </p>
+
+        <div class="contact-info-card">
+          <!-- Address -->
+          <div class="contact-row-item">
+            <div class="contact-icon-box">
+              <i class="bi bi-geo-alt-fill"></i>
+            </div>
+            <div>
+              <h6>Factory &amp; Registered Address</h6>
+              <p>
+                <strong>GROWTECH ENGINEERS</strong><br>
+                Main Market, Fazalwas, Tauru Road,<br>
+                Pachgaon, Manesar, Gurugram,<br>
+                Haryana – 122413, India
+              </p>
+            </div>
+          </div>
+
+          <!-- Proprietor -->
+          <div class="contact-row-item">
+            <div class="contact-icon-box">
+              <i class="bi bi-person-badge-fill"></i>
+            </div>
+            <div>
+              <h6>Proprietor &amp; Technical Head</h6>
+              <p><strong>Mr. Naresh Kumar</strong> (22+ Years Engineering Experience)</p>
+            </div>
+          </div>
+
+          <!-- Phone Numbers -->
+          <div class="contact-row-item">
+            <div class="contact-icon-box">
+              <i class="bi bi-telephone-fill"></i>
+            </div>
+            <div>
+              <h6>Phone Contact</h6>
+              <p>
+                <a href="tel:{{ company.phone_primary_raw }}" class="text-dark fw-bold">{{ company.phone_primary }}</a> (Mr. Naresh Kumar, Proprietor)
+              </p>
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="contact-row-item">
+            <div class="contact-icon-box">
+              <i class="bi bi-envelope-fill"></i>
+            </div>
+            <div>
+              <h6>Official Email</h6>
+              <p><a href="mailto:{{ company.email }}" class="text-dark">{{ company.email }}</a></p>
+            </div>
+          </div>
+
+          <!-- WhatsApp Contacts - Separate Working Links for Both Lines -->
+          <div class="contact-row-item">
+            <div class="contact-icon-box" style="background-color: #25d366;">
+              <i class="bi bi-whatsapp"></i>
+            </div>
+            <div>
+              <h6>Direct WhatsApp Support</h6>
+              <p class="mb-0">
+                <a href="{{ company.whatsapp_url_1 }}" target="_blank" rel="noopener" class="text-success fw-bold">
+                  <i class="bi bi-chat-text-fill"></i> +91-9991535590 (Mr. Naresh Kumar, Proprietor)
+                </a>
+              </p>
+            </div>
+          </div>
+
+          <!-- Registration IDs -->
+          <div class="contact-row-item">
+            <div class="contact-icon-box">
+              <i class="bi bi-patch-check-fill"></i>
+            </div>
+            <div>
+              <h6>Certifications &amp; Registrations</h6>
+              <p class="small text-muted mb-0">
+                <strong>Udyam:</strong> {{ company.udyam_number }}<br>
+                <strong>GSTIN:</strong> {{ company.gstin }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Instagram -->
+          <div class="contact-row-item">
+            <div class="contact-icon-box" style="background-color: #E1306C;">
+              <i class="bi bi-instagram"></i>
+            </div>
+            <div>
+              <h6>Instagram Channel</h6>
+              <p><a href="{{ company.instagram_url }}" target="_blank" rel="noopener" class="text-dark fw-bold">{{ company.instagram }}</a></p>
+            </div>
+          </div>
+
+          <!-- Working Hours -->
+          <div class="contact-row-item mb-0">
+            <div class="contact-icon-box" style="background-color: var(--gt-steel-medium);">
+              <i class="bi bi-clock-fill"></i>
+            </div>
+            <div>
+              <h6>Operating Hours</h6>
+              <p class="small text-muted mb-0">{{ company.working_hours }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Enquiry Form -->
+      <div class="col-lg-7">
+        <div class="card border p-4 p-md-5 shadow-sm">
+          <div class="section-badge">Send Message</div>
+          <h3 class="text-navy h4 mb-2">Request Technical Quotation / Enquiry</h3>
+          <p class="text-muted small mb-4">
+            Please fill in your component requirements below. Valid submissions are securely recorded and reviewed by our engineering team.
+          </p>
+
+          <form action="{{ url_for('contact') }}" method="POST" class="gt-enquiry-form">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="name" class="form-label">Full Name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="name" name="name" value="{{ form_data.get('name', '') }}" placeholder="e.g. Rajesh Kumar" required>
+                <div class="invalid-feedback">Please enter your full name (minimum 2 characters).</div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="company_name" class="form-label">Company / Firm Name</label>
+                <input type="text" class="form-control" id="company_name" name="company_name" value="{{ form_data.get('company_name', '') }}" placeholder="e.g. Apex Auto Components Pvt. Ltd.">
+              </div>
+
+              <div class="col-md-6">
+                <label for="email" class="form-label">Official Email Address <span class="text-danger">*</span></label>
+                <input type="email" class="form-control" id="email" name="email" value="{{ form_data.get('email', '') }}" placeholder="name@company.com" required>
+                <div class="invalid-feedback">Please provide a valid business email address.</div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="phone" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                <input type="tel" class="form-control" id="phone" name="phone" value="{{ form_data.get('phone', '') }}" placeholder="e.g. +91 9991535590" required>
+                <div class="invalid-feedback">Please enter a valid phone number (at least 8 digits).</div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="subject" class="form-label">Enquiry Subject <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="subject" name="subject" value="{{ form_data.get('subject', '') }}" placeholder="e.g. Request for Height Checking Fixture Quotation" required>
+                <div class="invalid-feedback">Please specify an enquiry subject (minimum 3 characters).</div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="service_category" class="form-label">Manufacturing Category</label>
+                <select class="form-select" id="service_category" name="service_category">
+                  <option value="Jigs and Fixtures" {% if form_data.get('service_category') == 'Jigs and Fixtures' %}selected{% endif %}>Jigs and Fixtures</option>
+                  <option value="Receiving Gauges" {% if form_data.get('service_category') == 'Receiving Gauges' %}selected{% endif %}>Receiving Gauges</option>
+                  <option value="Tandem Press Tools" {% if form_data.get('service_category') == 'Tandem Press Tools' %}selected{% endif %}>Tandem Press Tools &amp; Dies</option>
+                  <option value="Hydraulic Presses" {% if form_data.get('service_category') == 'Hydraulic Presses' %}selected{% endif %}>Hydraulic Presses</option>
+                  <option value="Trolleys and Racks" {% if form_data.get('service_category') == 'Trolleys and Racks' %}selected{% endif %}>Material Handling Trolleys &amp; Racks</option>
+                  <option value="Engineering Solutions" {% if form_data.get('service_category') == 'Engineering Solutions' %}selected{% endif %}>Plant Engineering &amp; Layout Solutions</option>
+                  <option value="General Machine Components" {% if form_data.get('service_category') == 'General Machine Components' %}selected{% endif %}>General Machine Components &amp; Tooling</option>
+                </select>
+              </div>
+
+              <div class="col-12">
+                <label for="message" class="form-label">Requirement Details / Part Specs <span class="text-danger">*</span></label>
+                <textarea class="form-control" id="message" name="message" rows="5" placeholder="Specify component dimensions, material grade (e.g. D2, mild steel, aluminum), quantity, CAD drawing status, or specific project milestones..." required>{{ form_data.get('message', '') }}</textarea>
+                <div class="invalid-feedback">Please write at least 10 characters detailing your requirement.</div>
+              </div>
+
+              <div class="col-12 mt-4">
+                <button type="submit" class="btn btn-gt-success w-100 py-2">
+                  <i class="bi bi-send-fill"></i> Submit RFQ to Growtech Engineers
+                </button>
+              </div>
+
+              <div class="col-12 text-center mt-3">
+                <small class="text-muted">
+                  <i class="bi bi-lock-fill text-secondary me-1"></i> Technical drawings and specifications are held strictly confidential.
+                </small>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Location & Route Directions Guide -->
+<section class="py-5 bg-light border-top">
+  <div class="container py-2">
+    <div class="card border p-4 bg-white shadow-sm">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+          <div class="section-badge">How to Reach Us</div>
+          <h4 class="text-navy mb-2">Location &amp; Connectivity in Manesar</h4>
+          <p class="text-secondary small mb-2">
+            <strong>Address:</strong> Main Market, Fazalwas, Tauru Road, Pachgaon, Manesar, Gurugram, Haryana – 122413, India.
+          </p>
+          <ul class="small text-muted ps-3 mb-0">
+            <li><strong>From NH-48 (Delhi-Jaipur Highway):</strong> Take the Pachgaon exit onto Tauru Road; located near the Main Market area in Fazalwas.</li>
+            <li><strong>From KMP Expressway:</strong> Directly accessible via the Pachgaon interchange within 5–7 minutes driving distance.</li>
+            <li><strong>Industrial Corridor:</strong> Located in close vicinity to IMT Manesar, Bawal, and Bilaspur industrial clusters.</li>
+          </ul>
+        </div>
+        <div class="col-lg-5 text-lg-end">
+          <a href="https://maps.google.com/?q=Pachgaon+Manesar+Gurugram+122413" target="_blank" rel="noopener" class="btn btn-gt-outline">
+            <i class="bi bi-map-fill text-success"></i> Open in Google Maps
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

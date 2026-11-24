@@ -1,0 +1,202 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}Owner Dashboard Overview{% endblock %}
+
+{% block content %}
+<div class="row g-3 mb-4">
+  <!-- Stat: Total Products -->
+  <div class="col-sm-6 col-xl-3">
+    <div class="admin-stat-card">
+      <div>
+        <div class="admin-stat-label">Total Products</div>
+        <div class="admin-stat-val">{{ stats.total_products }}</div>
+        <small class="text-success"><i class="bi bi-check-circle me-1"></i>{{ stats.published_products }} Published</small>
+      </div>
+      <div class="admin-stat-icon blue">
+        <i class="bi bi-box-seam"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stat: Total Enquiries -->
+  <div class="col-sm-6 col-xl-3">
+    <div class="admin-stat-card">
+      <div>
+        <div class="admin-stat-label">Total Enquiries</div>
+        <div class="admin-stat-val">{{ stats.total_enquiries }}</div>
+        {% if stats.new_enquiries > 0 %}
+          <small class="text-warning fw-bold"><i class="bi bi-bell-fill me-1"></i>{{ stats.new_enquiries }} Action Required</small>
+        {% else %}
+          <small class="text-muted"><i class="bi bi-check2-all me-1"></i>All Caught Up</small>
+        {% endif %}
+      </div>
+      <div class="admin-stat-icon amber">
+        <i class="bi bi-envelope-paper"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stat: Gallery Media -->
+  <div class="col-sm-6 col-xl-3">
+    <div class="admin-stat-card">
+      <div>
+        <div class="admin-stat-label">Gallery Media</div>
+        <div class="admin-stat-val">{{ stats.total_gallery }}</div>
+        <small class="text-muted">Factory, Machines &amp; Projects</small>
+      </div>
+      <div class="admin-stat-icon green">
+        <i class="bi bi-images"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stat: News & Milestones -->
+  <div class="col-sm-6 col-xl-3">
+    <div class="admin-stat-card">
+      <div>
+        <div class="admin-stat-label">News &amp; Events</div>
+        <div class="admin-stat-val">{{ stats.total_news }}</div>
+        <small class="text-muted">Confirmed Milestones</small>
+      </div>
+      <div class="admin-stat-icon purple">
+        <i class="bi bi-newspaper"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Actions Banner -->
+<div class="card border-0 shadow-sm mb-4 bg-white p-3">
+  <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+    <div>
+      <h6 class="mb-0 fw-bold text-navy">Content Quick Actions</h6>
+      <small class="text-muted">Easily add new products, update workshop media, or view customer RFQs</small>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+      <a href="{{ url_for('admin_product_add') }}" class="btn btn-sm btn-primary">
+        <i class="bi bi-plus-lg me-1"></i> Add Product
+      </a>
+      <a href="{{ url_for('admin_gallery_add') }}" class="btn btn-sm btn-success">
+        <i class="bi bi-upload me-1"></i> Upload Gallery Media
+      </a>
+      <a href="{{ url_for('admin_news_add') }}" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-plus-circle me-1"></i> Add Milestone
+      </a>
+      <a href="{{ url_for('admin_company') }}" class="btn btn-sm btn-outline-dark">
+        <i class="bi bi-pencil-square me-1"></i> Edit Company Info
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <!-- Recent Customer Enquiries -->
+  <div class="col-lg-7">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+        <h6 class="mb-0 fw-bold text-navy"><i class="bi bi-envelope-paper-fill text-warning me-2"></i>Recent Customer RFQs &amp; Enquiries</h6>
+        <a href="{{ url_for('admin_enquiries') }}" class="btn btn-sm btn-outline-primary">View All</a>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover table-admin mb-0">
+          <thead>
+            <tr>
+              <th>Client / Date</th>
+              <th>Subject / Category</th>
+              <th>Status</th>
+              <th class="text-end">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if recent_enquiries %}
+              {% for enq in recent_enquiries %}
+                <tr>
+                  <td>
+                    <div class="fw-bold">{{ enq.name }}</div>
+                    <small class="text-muted">{{ enq.company_name or 'Independent' }} • {{ enq.created_at[:10] }}</small>
+                  </td>
+                  <td>
+                    <div class="text-truncate" style="max-width: 200px;">{{ enq.subject or enq.service_category or 'General RFQ' }}</div>
+                    <small class="text-muted">{{ enq.phone }}</small>
+                  </td>
+                  <td>
+                    {% if enq.status == 'New' %}
+                      <span class="badge-status-new">New</span>
+                    {% elif enq.status == 'Contacted' %}
+                      <span class="badge-status-contacted">Contacted</span>
+                    {% else %}
+                      <span class="badge-status-completed">Completed</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-end">
+                    <a href="{{ url_for('admin_enquiry_detail', id=enq.id) }}" class="btn btn-sm btn-light border py-1 px-2" title="View Enquiry Details">
+                      <i class="bi bi-eye"></i>
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="4" class="text-center py-4 text-muted">No customer enquiries received yet.</td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Published Products Preview -->
+  <div class="col-lg-5">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+        <h6 class="mb-0 fw-bold text-navy"><i class="bi bi-box-seam-fill text-primary me-2"></i>Product Catalog Overview</h6>
+        <a href="{{ url_for('admin_products') }}" class="btn btn-sm btn-outline-primary">Manage Products</a>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover table-admin mb-0">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Category</th>
+              <th>Status</th>
+              <th class="text-end">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if recent_products %}
+              {% for p in recent_products %}
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center gap-2">
+                      <img src="{{ url_for('static', filename='images/' + p.image) if not p.image.startswith('uploads/') else url_for('static', filename=p.image) }}" alt="{{ p.title }}" class="thumb-table-sm">
+                      <div class="fw-semibold small text-truncate" style="max-width: 140px;">{{ p.title }}</div>
+                    </div>
+                  </td>
+                  <td><small class="text-muted">{{ p.category }}</small></td>
+                  <td>
+                    {% if p.is_published %}
+                      <span class="badge-admin-published">Live</span>
+                    {% else %}
+                      <span class="badge-admin-draft">Draft</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-end">
+                    <a href="{{ url_for('admin_product_edit', id=p.id) }}" class="btn btn-sm btn-light border py-1 px-2" title="Edit Product">
+                      <i class="bi bi-pencil"></i>
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="4" class="text-center py-4 text-muted">No products configured.</td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
