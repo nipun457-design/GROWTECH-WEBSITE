@@ -61,7 +61,34 @@ Before beginning the deployment:
 
 ---
 
-## 3. Step 2: Push Your Code to GitHub
+## 3. Deployment Options
+
+You can deploy to Render using either:
+- **Option 1: Render Blueprint (Infrastructure-as-Code — Recommended):** Render reads `render.yaml` and provisions the Web Service, PostgreSQL database, persistent disk, and environment variables automatically.
+- **Option 2: Manual Dashboard Setup:** Step-by-step creation via the Render Web UI.
+
+### Note on Render Plans & Persistent Disks
+- **Starter Plan (Full Production):** Render requires the Web Service to be on the `Starter` plan ($7/month) to attach a persistent disk (`/var/data/uploads`). This ensures product photos, certificates, and media uploaded by the owner persist across application updates, re-deploys, and container restarts.
+- **Free Tier (Evaluation / Demo):** If using Render's Free tier, the PostgreSQL database is free (for 30 days), but persistent disks cannot be attached. Uploaded files will be stored in `static/uploads` within the container (ephemeral). In `render.yaml`, the Web Service is configured with `plan: starter` and PostgreSQL with `plan: free`.
+
+---
+
+## 4. Option 1: One-Click Deploy via Render Blueprint (Recommended)
+
+1. Push your repository to GitHub.
+2. In the Render Dashboard, click **New +** in the top-right corner and select **Blueprint**.
+3. Select your `growtech-website` repository.
+4. Render will parse `render.yaml` and display the resources to be created:
+   - **growtech-engineers-web** (Web Service, Python 3, Gunicorn, Starter plan)
+   - **growtech-uploads** (Persistent Disk, 1 GB mounted at `/var/data/uploads`)
+   - **growtech-db** (Managed PostgreSQL database, Free plan)
+5. Review the plan and click **Apply**.
+6. Render will automatically build the service, run `migrate_phase2.py` to create tables, and start Gunicorn.
+7. Proceed to **Step 8: Initial Admin Account Setup**.
+
+---
+
+## 5. Option 2: Manual Dashboard Setup
 
 Ensure your local project code is pushed to your private or organization GitHub repository:
 ```bash

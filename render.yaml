@@ -9,7 +9,7 @@ services:
     runtime: python
     buildCommand: "pip install -r requirements.txt && python migrate_phase2.py"
     startCommand: "gunicorn app:app --workers 2 --threads 4 --timeout 120"
-    plan: free
+    plan: starter
     region: singapore
     envVars:
       - key: FLASK_ENV

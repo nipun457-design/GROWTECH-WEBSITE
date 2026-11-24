@@ -164,30 +164,6 @@ class DBConnection:
         c = self.cursor()
         c.execute(query, params)
         return c
-        has_returning = "RETURNING" in translated_query.upper()
-
-        if self.is_pg and is_insert and not has_returning:
-            # Append RETURNING id to capture lastrowid
-            translated_query = translated_query.rstrip().rstrip(';') + " RETURNING id;"
-
-        if params:
-            # Handle tuple/list parameters
-            cursor.execute(translated_query, params)
-        else:
-            cursor.execute(translated_query)
-
-        if self.is_pg:
-            if is_insert:
-                try:
-                    res = cursor.fetchone()
-                    if res:
-                        lastrowid = res[0] if not isinstance(res, dict) else res.get('id')
-                except Exception:
-                    pass
-        else:
-            lastrowid = getattr(cursor, 'lastrowid', None)
-
-        return CursorWrapper(cursor, is_pg=self.is_pg, lastrowid=lastrowid)
 
     def commit(self):
         self.conn.commit()
