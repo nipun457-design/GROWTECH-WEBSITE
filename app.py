@@ -20,10 +20,12 @@ app = Flask(__name__)
 # Register media_url directly on Jinja environment (filter and global function)
 app.jinja_env.filters['media_url'] = storage.resolve_media_url
 app.jinja_env.globals['media_url'] = storage.resolve_media_url
+app.jinja_env.auto_reload = True
 
 # --- Production Environment Configuration ---
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'growtech-engineers-industrial-sec-2023')
 app.config['DEBUG'] = os.environ.get('FLASK_DEBUG', 'false').lower() in ('true', '1', 't')
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB max upload
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=4)
 app.config['SESSION_COOKIE_HTTPONLY'] = True
@@ -143,6 +145,16 @@ def login_required(f):
             return redirect(url_for('admin_login', next=request.path))
         return f(*args, **kwargs)
     return decorated_function
+
+# --- Cache-Control for HTML Pages ---
+@app.after_request
+def add_no_cache_headers(response):
+    """Ensure HTML pages are not cached by browsers during development or updates"""
+    if response.content_type and 'text/html' in response.content_type:
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate, max-age=0'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+    return response
 
 # --- CSRF & Global Context Processors ---
 @app.context_processor

@@ -417,8 +417,37 @@
   </div>
 </section>
 
+<!-- Government Registration & Certification (Official MSME Udyam) -->
+<section class="py-5 bg-white border-top">
+  <div class="container py-2">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-6">
+        <div class="section-badge">Official Compliance</div>
+        <h2 class="section-title">Government Registered Manufacturing Enterprise</h2>
+        <div class="section-divider"></div>
+        <p class="text-secondary">
+          Growtech Engineers is a recognized <strong>Micro Manufacturing Enterprise</strong> registered with the <strong>Ministry of Micro, Small &amp; Medium Enterprises (MSME), Government of India</strong>.
+        </p>
+        <ul class="list-unstyled text-secondary">
+          <li class="mb-2"><i class="bi bi-patch-check-fill text-success me-2"></i><strong>Udyam Registration No.:</strong> {{ company.udyam_number }}</li>
+          <li class="mb-2"><i class="bi bi-patch-check-fill text-success me-2"></i><strong>GST Identification No.:</strong> {{ company.gstin }}</li>
+          <li class="mb-2"><i class="bi bi-patch-check-fill text-success me-2"></i><strong>National Industry Classification (NIC):</strong> {{ company.nic_code }}</li>
+          <li class="mb-2"><i class="bi bi-patch-check-fill text-success me-2"></i><strong>Enterprise Classification:</strong> {{ company.udyam_type }}</li>
+          <li class="mb-2"><i class="bi bi-patch-check-fill text-success me-2"></i><strong>Registered Plant Address:</strong> {{ company.location }}</li>
+        </ul>
+      </div>
+      <div class="col-lg-6">
+        <div class="p-3 border rounded bg-light shadow-sm text-center">
+          <img src="{{ url_for('static', filename='images/certificates/udyam_badge.svg') }}" alt="Udyam Registration Certificate Growtech Engineers" class="img-fluid rounded border">
+          <small class="text-muted d-block mt-2">Verified Government of India Udyam Certificate: {{ company.udyam_number }}</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- Genuine Customer Logos Section (From Slide 16) -->
-<section class="py-5 bg-white">
+<section class="py-5 bg-light border-top border-bottom">
   <div class="container py-2">
     <div class="text-center mb-5">
       <div class="section-badge">Client Trust</div>

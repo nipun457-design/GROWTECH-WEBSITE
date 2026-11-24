@@ -58,7 +58,7 @@
   </div>
 </section>
 
-<!-- 2. Company Introduction Section -->
+<!-- 2. Short Company Overview Section -->
 <section class="py-5 bg-white">
   <div class="container py-2">
     <div class="row align-items-center g-5">
@@ -103,51 +103,53 @@
       </div>
 
       <div class="col-lg-6">
-        <div class="card border p-4 bg-light shadow-sm">
-          <h4 class="mb-3 text-navy">Key Company Overview</h4>
-          <table class="table table-sm table-bordered bg-white mb-0">
-            <tbody>
-              <tr>
-                <th class="bg-light text-navy" style="width: 38%;">Company Name</th>
-                <td><strong>GROWTECH ENGINEERS</strong></td>
-              </tr>
-              <tr>
-                <th class="bg-light text-navy">Proprietor</th>
-                <td>Mr. Naresh Kumar (22+ Yrs Exp.)</td>
-              </tr>
-              <tr>
-                <th class="bg-light text-navy">Established</th>
-                <td>September 2023 (as stated in profile)</td>
-              </tr>
-              <tr>
-                <th class="bg-light text-navy">Government Registration</th>
-                <td>Udyam: <strong>UDYAM-HR-05-0093212</strong> (Micro Enterprise)</td>
-              </tr>
-              <tr>
-                <th class="bg-light text-navy">GSTIN</th>
-                <td>06BIYPK7127F1ZV</td>
-              </tr>
-              <tr>
-                <th class="bg-light text-navy">Manufacturing Base</th>
-                <td>Main Market, Fazalwas, Tauru Road, Pachgaon, Manesar, Gurugram</td>
-              </tr>
-              <tr>
-                <th class="bg-light text-navy">Primary Contact</th>
-                <td><a href="tel:{{ company.phone_primary_raw }}" class="text-dark fw-bold">{{ company.phone_primary }}</a> (Mr. Naresh Kumar)</td>
-              </tr>
-              <tr>
-                <th class="bg-light text-navy">Email</th>
-                <td>growtechengineers911@gmail.com</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="card border p-4 bg-light shadow-sm h-100 d-flex flex-column justify-content-between">
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-3">
+              <div class="contact-icon-box" style="background-color: var(--gt-navy);">
+                <i class="bi bi-building-fill-gear"></i>
+              </div>
+              <h4 class="mb-0 text-navy h5">At A Glance</h4>
+            </div>
+            <ul class="list-unstyled mb-0">
+              <li class="py-2 border-bottom d-flex justify-content-between align-items-center">
+                <span class="text-secondary small">Establishment</span>
+                <strong class="text-navy small">September 2023</strong>
+              </li>
+              <li class="py-2 border-bottom d-flex justify-content-between align-items-center">
+                <span class="text-secondary small">Engineering Leadership</span>
+                <strong class="text-navy small">Mr. Naresh Kumar (22+ Yrs)</strong>
+              </li>
+              <li class="py-2 border-bottom d-flex justify-content-between align-items-center">
+                <span class="text-secondary small">Industrial Location</span>
+                <strong class="text-navy small">Pachgaon, Manesar (Gurugram)</strong>
+              </li>
+              <li class="py-2 border-bottom d-flex justify-content-between align-items-center">
+                <span class="text-secondary small">Enterprise Status</span>
+                <strong class="text-navy small">MSME Registered Micro Enterprise</strong>
+              </li>
+              <li class="py-2 border-bottom d-flex justify-content-between align-items-center">
+                <span class="text-secondary small">Core Specialization</span>
+                <strong class="text-navy small">Jigs, Fixtures, Gauges, Press Tools</strong>
+              </li>
+              <li class="py-2 d-flex justify-content-between align-items-center">
+                <span class="text-secondary small">Quality Standard</span>
+                <strong class="text-navy small">100% CMM &amp; GD&amp;T Inspection</strong>
+              </li>
+            </ul>
+          </div>
+          <div class="mt-4 pt-3 border-top">
+            <a href="{{ url_for('company') }}" class="btn btn-gt-outline w-100">
+              Explore Detailed Company Profile &amp; Infrastructure <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- 3. Manufacturing Activities & Capabilities Grid -->
+<!-- 3. Manufacturing Activities & Capabilities Highlights -->
 <section class="py-5 bg-light border-top border-bottom">
   <div class="container py-2">
     <div class="text-center mb-5">
@@ -258,7 +260,7 @@
   </div>
 </section>
 
-<!-- 4. Featured Products Showcase (Using Genuine Deliverables Photos) -->
+<!-- 4. Featured Products Showcase (Small Preview Selection) -->
 <section class="py-5 bg-white">
   <div class="container py-2">
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4">
@@ -308,7 +310,7 @@
   </div>
 </section>
 
-<!-- 5. Machinery & Infrastructure Preview (Using Real Workshop Photos) -->
+<!-- 5. Machinery & Infrastructure Preview -->
 <section class="py-5 bg-light border-top border-bottom">
   <div class="container py-2">
     <div class="row align-items-center g-4 mb-4">
@@ -366,47 +368,62 @@
   </div>
 </section>
 
-<!-- 6. Completed Projects / Deliverables Showcase -->
+<!-- 6. Why Choose GROWTECH ENGINEERS -->
 <section class="py-5 bg-white">
   <div class="container py-2">
     <div class="text-center mb-5">
-      <div class="section-badge">Proven Execution</div>
-      <h2 class="section-title">Major Deliverables &amp; Completed Tooling</h2>
+      <div class="section-badge">Why Partner With Us</div>
+      <h2 class="section-title">Why Choose GROWTECH ENGINEERS</h2>
       <p class="section-subtitle mx-auto">
-        Confirmed tooling sets, checking fixtures, and special purpose machinery delivered to industrial clients.
+        Engineering precision, rapid response, and deep toolroom craftsmanship tailored for high-volume automotive and industrial manufacturing.
       </p>
     </div>
 
     <div class="row g-4">
-      <div class="col-md-4">
-        <div class="card h-100 border p-3 bg-light">
-          <img src="{{ url_for('static', filename='images/products/jigs_fixtures_real.jpg') }}" alt="Height Checking Fixture with Automation" class="img-fluid rounded mb-3 border" style="height: 180px; object-fit: cover;">
-          <span class="badge bg-navy text-white mb-2" style="background-color: var(--gt-navy); width: fit-content;">Checking Fixture</span>
-          <h5 class="text-navy">Height Checking Fixture with Automation</h5>
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 border p-4 bg-light shadow-sm text-center">
+          <div class="capability-icon-wrap mx-auto">
+            <i class="bi bi-award-fill"></i>
+          </div>
+          <h4 class="h5 text-navy mb-2">22+ Years Toolroom Experience</h4>
           <p class="small text-secondary mb-0">
-            Specialized inspection fixture equipped with automated clamping and digital position feedback for high-accuracy height inspection.
+            Under the direct leadership of Proprietor Mr. Naresh Kumar, bringing decades of hands-on expertise in die design, machining tolerances, and fixture assembly.
           </p>
         </div>
       </div>
 
-      <div class="col-md-4">
-        <div class="card h-100 border p-3 bg-light">
-          <img src="{{ url_for('static', filename='images/products/receiving_gauge_real.jpg') }}" alt="Housing Assembly Receiving Gauge" class="img-fluid rounded mb-3 border" style="height: 180px; object-fit: cover;">
-          <span class="badge bg-navy text-white mb-2" style="background-color: var(--gt-navy); width: fit-content;">Receiving Gauge</span>
-          <h5 class="text-navy">Housing Assembly Receiving Gauge</h5>
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 border p-4 bg-light shadow-sm text-center">
+          <div class="capability-icon-wrap mx-auto">
+            <i class="bi bi-shield-check"></i>
+          </div>
+          <h4 class="h5 text-navy mb-2">Zero-Defect Repeatability</h4>
           <p class="small text-secondary mb-0">
-            Precision mechanical receiver gauge verifying multiple datum points, hole positions, and housing profile tolerances.
+            Poka-Yoke mistake proofing, GD&amp;T coordinate inspection, and comprehensive tryout procedures ensure flawless batch production on your shop floor.
           </p>
         </div>
       </div>
 
-      <div class="col-md-4">
-        <div class="card h-100 border p-3 bg-light">
-          <img src="{{ url_for('static', filename='images/products/press_tool_bending.jpg') }}" alt="Die for Sheet Bending" class="img-fluid rounded mb-3 border" style="height: 180px; object-fit: cover;">
-          <span class="badge bg-navy text-white mb-2" style="background-color: var(--gt-navy); width: fit-content;">Press Tooling</span>
-          <h5 class="text-navy">Precision Die for Sheet Bending</h5>
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 border p-4 bg-light shadow-sm text-center">
+          <div class="capability-icon-wrap mx-auto">
+            <i class="bi bi-cpu-fill"></i>
+          </div>
+          <h4 class="h5 text-navy mb-2">Modern In-House Infrastructure</h4>
           <p class="small text-secondary mb-0">
-            Multi-stage sheet bending and forming die set manufactured with hardened D2 tool steel inserts for consistent bending angles.
+            From VMC contouring (1200×650mm) and milling with DRO to surface grinders, lathes, and calibrated granite inspection tables under one roof.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 border p-4 bg-light shadow-sm text-center">
+          <div class="capability-icon-wrap mx-auto">
+            <i class="bi bi-lightning-charge-fill"></i>
+          </div>
+          <h4 class="h5 text-navy mb-2">Fast Turnaround &amp; Support</h4>
+          <p class="small text-secondary mb-0">
+            Centrally located in the Manesar industrial corridor for rapid part reviews, quick tool maintenance, on-site tryouts, and on-time component deliveries.
           </p>
         </div>
       </div>
@@ -414,14 +431,14 @@
   </div>
 </section>
 
-<!-- 7. Genuine Customer Logos Section (From Company Profile) -->
+<!-- 7. Valuable Customers Section -->
 <section class="py-5 bg-light border-top border-bottom">
   <div class="container py-2">
     <div class="text-center mb-4">
       <div class="section-badge">Client Trust</div>
-      <h2 class="section-title">Our Valuable Customers</h2>
+      <h2 class="section-title">Valuable Customers We Support</h2>
       <p class="section-subtitle mx-auto">
-        Tooling, fixtures, and machine component manufacturing partners across leading industrial and automotive enterprises.
+        Trusted tooling and component manufacturing partner for leading automotive and industrial suppliers.
       </p>
     </div>
 
@@ -438,149 +455,33 @@
   </div>
 </section>
 
-<!-- 8. Government Registration & Certification (Accurate Udyam MSME) -->
-<section class="py-5 bg-white border-bottom">
+<!-- 8. Short Contact Call-to-Action Banner -->
+<section class="py-5 bg-white">
   <div class="container py-2">
-    <div class="row align-items-center g-4">
-      <div class="col-lg-6">
-        <div class="section-badge">Official Compliance</div>
-        <h2 class="section-title">Government Registered Manufacturing Enterprise</h2>
-        <div class="section-divider"></div>
-        <p class="text-secondary">
-          Growtech Engineers is a recognized <strong>Micro Manufacturing Enterprise</strong> registered with the <strong>Ministry of Micro, Small &amp; Medium Enterprises (MSME), Government of India</strong>.
-        </p>
-        <ul class="list-unstyled text-secondary">
-          <li class="mb-2"><i class="bi bi-patch-check-fill text-success me-2"></i><strong>Udyam Registration No.:</strong> {{ company.udyam_number }}</li>
-          <li class="mb-2"><i class="bi bi-patch-check-fill text-success me-2"></i><strong>GST Identification No.:</strong> {{ company.gstin }}</li>
-          <li class="mb-2"><i class="bi bi-patch-check-fill text-success me-2"></i><strong>National Industry Classification (NIC):</strong> 28221 (Metal-forming machinery &amp; machine tools)</li>
-          <li class="mb-2"><i class="bi bi-patch-check-fill text-success me-2"></i><strong>Enterprise Classification:</strong> Micro Enterprise (Manufacturing)</li>
-        </ul>
-      </div>
-      <div class="col-lg-6">
-        <div class="p-3 border rounded bg-light shadow-sm text-center">
-          <img src="{{ url_for('static', filename='images/certificates/udyam_badge.svg') }}" alt="Udyam Registration Certificate Growtech Engineers" class="img-fluid rounded border">
-          <small class="text-muted d-block mt-2">Verified Government of India Udyam Certificate: UDYAM-HR-05-0093212</small>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+    <div class="card border p-4 p-md-5 bg-light text-center shadow-sm" style="border-left: 4px solid var(--gt-green) !important;">
+      <div class="section-badge mx-auto">Get In Touch</div>
+      <h2 class="text-navy h3 mb-2">Ready to Discuss Your Tooling or Manufacturing Requirements?</h2>
+      <p class="text-secondary max-w-700 mx-auto mb-4" style="max-width: 680px;">
+        Partner with GROWTECH ENGINEERS for precision jigs, fixtures, receiving gauges, tandem press tools, and custom engineering solutions. Contact our engineering team for technical drawing reviews, feasibility studies, and quotations.
+      </p>
 
-<!-- 9. Homepage Quick Contact & RFQ Section -->
-<section class="py-5 bg-light">
-  <div class="container py-2">
-    <div class="row g-5 align-items-center">
-      <div class="col-lg-5">
-        <div class="section-badge">Get in Touch</div>
-        <h2 class="section-title">Ready to Discuss Your Tooling Requirements?</h2>
-        <div class="section-divider"></div>
-        <p class="text-secondary">
-          Contact our technical team in Manesar for drawing reviews, feasibility studies, tooling quotes, or shop floor visits.
-        </p>
-
-        <div class="contact-info-card mt-4">
-          <div class="contact-row-item">
-            <div class="contact-icon-box">
-              <i class="bi bi-geo-alt-fill"></i>
-            </div>
-            <div>
-              <h6>Factory Address</h6>
-              <p>{{ company.location }}</p>
-            </div>
-          </div>
-
-          <div class="contact-row-item">
-            <div class="contact-icon-box">
-              <i class="bi bi-telephone-fill"></i>
-            </div>
-            <div>
-              <h6>Call Proprietor</h6>
-              <p>
-                <a href="tel:{{ company.phone_primary_raw }}" class="text-dark fw-bold">{{ company.phone_primary }}</a> (Mr. Naresh Kumar, Proprietor)
-              </p>
-            </div>
-          </div>
-
-          <div class="contact-row-item">
-            <div class="contact-icon-box">
-              <i class="bi bi-envelope-fill"></i>
-            </div>
-            <div>
-              <h6>Official Email</h6>
-              <p><a href="mailto:{{ company.email }}" class="text-dark">{{ company.email }}</a></p>
-            </div>
-          </div>
-
-          <div class="contact-row-item mb-0">
-            <div class="contact-icon-box" style="background-color: #25d366;">
-              <i class="bi bi-whatsapp"></i>
-            </div>
-            <div>
-              <h6>Direct WhatsApp Support</h6>
-              <p>
-                <a href="{{ company.whatsapp_url_1 }}" target="_blank" rel="noopener" class="text-success fw-bold">Chat with Mr. Naresh Kumar (+91-9991535590)</a>
-              </p>
-            </div>
-          </div>
-        </div>
+      <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
+        <a href="{{ url_for('contact') }}" class="btn btn-gt-primary">
+          <i class="bi bi-envelope-check-fill me-1"></i> Request Technical Quotation / Send RFQ
+        </a>
+        <a href="{{ company.whatsapp_url_1 }}" class="btn btn-gt-success" target="_blank" rel="noopener">
+          <i class="bi bi-whatsapp me-1"></i> Chat on WhatsApp (+91-9991535590)
+        </a>
+        <a href="tel:{{ company.phone_primary_raw }}" class="btn btn-gt-outline">
+          <i class="bi bi-telephone-fill me-1"></i> Call +91-9991535590
+        </a>
       </div>
 
-      <div class="col-lg-7">
-        <div class="card border p-4 shadow-sm bg-white">
-          <h4 class="text-navy mb-2">Send an Enquiry or RFQ</h4>
-          <p class="text-muted small mb-4">Fill in your component details below. Our engineering team reviews specifications and responds directly.</p>
-
-          <form action="{{ url_for('contact') }}" method="POST" class="gt-enquiry-form">
-            <div class="row g-3">
-              <div class="col-md-6">
-                <label for="home_name" class="form-label">Full Name <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="home_name" name="name" placeholder="e.g. Ramesh Sharma" required>
-                <div class="invalid-feedback">Please enter your full name (at least 2 characters).</div>
-              </div>
-              <div class="col-md-6">
-                <label for="home_company" class="form-label">Company Name</label>
-                <input type="text" class="form-control" id="home_company" name="company_name" placeholder="e.g. Precision Auto Components Ltd.">
-              </div>
-              <div class="col-md-6">
-                <label for="home_email" class="form-label">Email Address <span class="text-danger">*</span></label>
-                <input type="email" class="form-control" id="home_email" name="email" placeholder="name@company.com" required>
-                <div class="invalid-feedback">Please provide a valid email address.</div>
-              </div>
-              <div class="col-md-6">
-                <label for="home_phone" class="form-label">Phone Number <span class="text-danger">*</span></label>
-                <input type="tel" class="form-control" id="home_phone" name="phone" placeholder="e.g. +91 9991535590" required>
-                <div class="invalid-feedback">Please enter a valid phone number.</div>
-              </div>
-              <div class="col-md-6">
-                <label for="home_subject" class="form-label">Enquiry Subject <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="home_subject" name="subject" placeholder="e.g. Quotation for Tandem Press Die" required>
-                <div class="invalid-feedback">Please specify an enquiry subject (at least 3 characters).</div>
-              </div>
-              <div class="col-md-6">
-                <label for="home_service" class="form-label">Manufacturing Category</label>
-                <select class="form-select" id="home_service" name="service_category">
-                  <option value="Jigs and Fixtures">Jigs and Fixtures</option>
-                  <option value="Receiving Gauges">Receiving Gauges</option>
-                  <option value="Tandem Press Tools">Tandem Press Tools &amp; Dies</option>
-                  <option value="Hydraulic Presses">Hydraulic Presses</option>
-                  <option value="Trolleys and Racks">Material Handling Trolleys &amp; Racks</option>
-                  <option value="Engineering Solutions">Plant Engineering &amp; Layout Solutions</option>
-                  <option value="Other / General Enquiry">Other / General Machine Components</option>
-                </select>
-              </div>
-              <div class="col-12">
-                <label for="home_message" class="form-label">Requirement Details / Part Specs <span class="text-danger">*</span></label>
-                <textarea class="form-control" id="home_message" name="message" rows="4" placeholder="Briefly describe your component dimensions, quantity, tooling type or specific technical requirements..." required></textarea>
-                <div class="invalid-feedback">Please write at least 10 characters detailing your requirement.</div>
-              </div>
-              <div class="col-12 mt-4">
-                <button type="submit" class="btn btn-gt-success w-100 py-2">
-                  <i class="bi bi-send-fill"></i> Submit Enquiry to Growtech Engineers
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
+      <div class="d-flex flex-wrap justify-content-center gap-2 pt-3 border-top">
+        <span class="badge bg-white text-navy border px-3 py-2"><i class="bi bi-geo-alt-fill text-success me-1"></i> Pachgaon, Manesar</span>
+        <span class="badge bg-white text-navy border px-3 py-2"><i class="bi bi-person-fill text-success me-1"></i> Mr. Naresh Kumar (Proprietor)</span>
+        <span class="badge bg-white text-navy border px-3 py-2"><i class="bi bi-envelope-fill text-success me-1"></i> {{ company.email }}</span>
+        <span class="badge bg-white text-navy border px-3 py-2"><i class="bi bi-clock-fill text-success me-1"></i> {{ company.working_hours }}</span>
       </div>
     </div>
   </div>

@@ -130,5 +130,73 @@ class GrowtechEngineersTestCase(unittest.TestCase):
             res = self.client.get(asset)
             self.assertEqual(res.status_code, 200, f"Static asset {asset} failed to resolve!")
 
+    def test_page_content_separation(self):
+        """Verify each navigation page contains its own relevant content and does not duplicate other pages"""
+        # 1. Homepage (/)
+        home_res = self.client.get('/')
+        self.assertEqual(home_res.status_code, 200)
+        self.assertIn(b'hero-industrial', home_res.data)
+        self.assertIn(b'At A Glance', home_res.data)
+        self.assertIn(b'Manufacturing Capabilities', home_res.data)
+        self.assertIn(b'Featured Products &amp; Deliverables', home_res.data)
+        self.assertIn(b'Machinery &amp; Manufacturing Setup', home_res.data)
+        self.assertIn(b'Why Choose GROWTECH ENGINEERS', home_res.data)
+        self.assertIn(b'Valuable Customers We Support', home_res.data)
+        self.assertIn(b'Ready to Discuss Your Tooling or Manufacturing Requirements?', home_res.data)
+        # Verify homepage does NOT repeat full profile table or full contact RFQ form
+        self.assertNotIn(b'Official Profile Summary', home_res.data)
+        self.assertNotIn(b'action="/contact" method="POST"', home_res.data)
+        self.assertNotIn(b'id="home_name"', home_res.data)
+
+        # 2. Company Page (/company)
+        company_res = self.client.get('/company')
+        self.assertEqual(company_res.status_code, 200)
+        self.assertIn(b'Official Profile Summary', company_res.data)
+        self.assertIn(b'Our Vision', company_res.data)
+        self.assertIn(b'Our Mission', company_res.data)
+        self.assertIn(b'Factory Infrastructure &amp; Layout', company_res.data)
+        self.assertIn(b'Our Machinery &amp; Equipment Setup', company_res.data)
+        self.assertIn(b'The Manufacturing Team', company_res.data)
+        self.assertIn(b'Government Registered Manufacturing Enterprise', company_res.data)
+        self.assertIn(b'Valuable Customers We Support', company_res.data)
+        # Verify company page does NOT repeat hero, full product catalog, or contact form
+        self.assertNotIn(b'hero-industrial', company_res.data)
+        self.assertNotIn(b'product-grid-item', company_res.data)
+        self.assertNotIn(b'action="/contact" method="POST"', company_res.data)
+
+        # 3. Products Page (/products)
+        products_res = self.client.get('/products')
+        self.assertEqual(products_res.status_code, 200)
+        self.assertIn(b'category-filter-btn', products_res.data)
+        self.assertIn(b'product-grid-item', products_res.data)
+        self.assertIn(b'Have Specific Component Drawings or Part Samples?', products_res.data)
+        # Verify products page does NOT repeat profile summary, vision/mission, or contact form
+        self.assertNotIn(b'Official Profile Summary', products_res.data)
+        self.assertNotIn(b'Our Vision', products_res.data)
+        self.assertNotIn(b'action="/contact" method="POST"', products_res.data)
+
+        # 4. News Page (/news)
+        news_res = self.client.get('/news')
+        self.assertEqual(news_res.status_code, 200)
+        self.assertIn(b'Verified Manufacturing Milestones', news_res.data)
+        self.assertIn(b'news-card', news_res.data)
+        self.assertIn(b'Schedule a Plant Visit &amp; Technical Review', news_res.data)
+        # Verify news page does NOT repeat product catalog or profile summary
+        self.assertNotIn(b'product-grid-item', news_res.data)
+        self.assertNotIn(b'Official Profile Summary', news_res.data)
+        self.assertNotIn(b'action="/contact" method="POST"', news_res.data)
+
+        # 5. Contact Page (/contact)
+        contact_res = self.client.get('/contact')
+        self.assertEqual(contact_res.status_code, 200)
+        self.assertIn(b'gt-enquiry-form', contact_res.data)
+        self.assertIn(b'action="/contact" method="POST"', contact_res.data)
+        self.assertIn(b'Request Technical Quotation / Enquiry', contact_res.data)
+        self.assertIn(b'contact-info-card', contact_res.data)
+        self.assertIn(b'Location &amp; Connectivity in Manesar', contact_res.data)
+        # Verify contact page does NOT repeat product catalog or hero
+        self.assertNotIn(b'product-grid-item', contact_res.data)
+        self.assertNotIn(b'hero-industrial', contact_res.data)
+
 if __name__ == '__main__':
     unittest.main()
